@@ -1,0 +1,19 @@
+{
+    "general" : {
+        "botToken": "",
+        "listeningCommand" : "!ReSO"
+    },
+    "permissions" : {
+        "listeningChannelId" : "",
+        "allowedRole" : ""
+    },
+    "file_fetch" : {
+        "fileDropLocationChannelId" : "",
+        "fileDropClientFilePath" : ""
+    },
+    "ssh" : {
+        "Host": "",
+        "Username": "",
+        "Passwd": ""
+    }
+}
