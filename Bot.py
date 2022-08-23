@@ -31,14 +31,14 @@ async def on_message(message):
     if not __valid_command(message):
         return
 
-    flag = message.content.split(" ")[0];
-    command = message.content.split(" ")[1];
+    flag = message.content.split(" ")[0]
+    command = message.content.split(" ")[1]
     params = message.content.replace(f'{flag} {command}', '')
 
     for script in scripts['scripts']:
         if script["name"] == command:
             await message.channel.send(f'Running script: {script["name"]}')
-            await __call_script(command, params)
+            __call_script(script, params)
             await message.channel.send('Complete')
 
     for file in files['files']:
@@ -63,8 +63,8 @@ def __valid_command(message):
     return True
 
 
-async def __call_script(command, params):
-    server_command = f'{command["command"]} "{params.strip()}"'
+def __call_script(script, params):
+    server_command = f'{script["command"]} "{params.strip()}"'
     username = config['ssh']['Username']
     host = config['ssh']['Host']
     subprocess.run(["ssh", f"{username}@{host}", server_command],
