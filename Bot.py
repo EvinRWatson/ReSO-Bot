@@ -11,7 +11,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 print('Initializing Discord Client')
-client = discord.Client()
+client = discord.Client(intents=discord.Intents.default())
 
 print('Loading Config')
 config = json.load(open('config.json'))
