@@ -10,10 +10,8 @@ Alternatively run these commands (Debian/Ubuntu based Linux distributions only):
     
 ~~~
 sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt-get update
-sudo apt-get install python3.9
-python3.9 get-pip.py
+sudo add-apt-repository ppa:deadsnakes/ppa && sudo apt-get update
+sudo apt-get install python3.9 python3-pip
 python3.9 -m pip install -U discord.py
 ~~~
 

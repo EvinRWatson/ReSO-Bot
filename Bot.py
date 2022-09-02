@@ -5,7 +5,7 @@ import subprocess
 
 print('Initializing Logger')
 logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
@@ -23,13 +23,17 @@ files = json.load(open('fetch_files.json'))
 
 @client.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    __output_log_console('We have logged in as {0.user}'.format(client))
+    send_channel = client.get_channel(int(config['permissions']['listeningChannelId']))
+    await send_channel.send('---BOT ONLINE---')
 
 
 @client.event
 async def on_message(message):
     if not __valid_command(message):
         return
+
+    __output_log_console(f'Command Received: {message.content}')
 
     flag = message.content.split(" ")[0]
     command = message.content.split(" ")[1]
@@ -48,6 +52,8 @@ async def on_message(message):
             send_channel = client.get_channel(int(config['file_fetch']['fileDropLocationChannelId']))
             await send_channel.send(file=end_file)
             await message.channel.send('Complete')
+
+    __output_log_console(f'Execution finished on Command: {message.content}')
 
 
 def __valid_command(message):
@@ -85,6 +91,11 @@ def __fetch_file(file):
     file_path = f'{file_destination}/latest.log'
     end_file = discord.File(file_path)
     return end_file
+
+
+def __output_log_console(output):
+    print(output)
+    logger.info(output)
 
 
 client.run(config['general']['botToken'])
