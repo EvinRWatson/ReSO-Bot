@@ -154,3 +154,5 @@ Example:
 
     /home/bob/minecraft/logs/latest.log
 
+## File Structure
+This file follows the same structure as the scripts.json file
