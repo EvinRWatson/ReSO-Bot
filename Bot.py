@@ -1,4 +1,5 @@
 import discord
+import interactions
 import logging
 import json
 import subprocess
@@ -10,9 +11,6 @@ handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-print('Initializing Discord Client')
-client = discord.Client(intents=discord.Intents.default())
-
 print('Loading Config')
 config = json.load(open('config.json'))
 
@@ -20,50 +18,60 @@ print('Loading Scripts and Files')
 scripts = json.load(open('scripts.json'))
 files = json.load(open('fetch_files.json'))
 
-
-@client.event
-async def on_ready():
-    __output_log_console('We have logged in as {0.user}'.format(client))
-    send_channel = client.get_channel(int(config['permissions']['listeningChannelId']))
-    await send_channel.send('---BOT ONLINE---')
+bot = interactions.Client(token=config['general']['botToken'],
+                          default_scope=config['general']['guildId'])
 
 
-@client.event
-async def on_message(message):
-    if not __valid_command(message):
+@bot.command(
+    name='reso',
+    description="Command to trigger ReSO Bot interpretation",
+    options=[
+        interactions.Option(
+            name="params",
+            description="Parameters",
+            type=interactions.OptionType.STRING,
+            required=True
+        )
+    ],
+    dm_permission=False
+)
+async def reso(ctx: interactions.CommandContext, params: str):
+    await ctx.send(f'Received Command Parameters: {params}')
+
+    if not __valid_command(ctx, params):
+        await ctx.send('Invalid Command')
         return
 
-    __output_log_console(f'Command Received: {message.content}')
-
-    flag = message.content.split(" ")[0]
-    command = message.content.split(" ")[1]
-    params = message.content.replace(f'{flag} {command}', '')
+    command = params.split(" ")[0]
+    params = params.replace(f'{command} ', '')
 
     for script in scripts['scripts']:
         if script["name"] == command:
-            await message.channel.send(f'Running script: {script["name"]}')
+            await ctx.send(f'Running script: {script["name"]}')
             __call_script(script, params)
-            await message.channel.send('Complete')
+            await ctx.send('Complete')
+            return
 
     for file in files['files']:
         if file["name"] == command:
-            await message.channel.send(f'Running File Fetch: {file["name"]}')
+            await ctx.send(f'Running File Fetch: {file["name"]}')
             end_file = __fetch_file(file)
-            send_channel = client.get_channel(int(config['file_fetch']['fileDropLocationChannelId']))
-            await send_channel.send(file=end_file)
-            await message.channel.send('Complete')
+            #send_channel = client.get_channel(int(config['file_fetch']['fileDropLocationChannelId']))
+            #await send_channel.send(file=end_file)
+            await ctx.send('Complete')
+            return
 
-    __output_log_console(f'Execution finished on Command: {message.content}')
+    __output_log_console('Command not found: {}')
 
 
-def __valid_command(message):
-    if message.author == client.user:
+def __valid_command(ctx):
+    if ctx.author == bot.me.name:
         return False
-    if not message.content.startswith(config['general']['listeningCommand']):
+    if not str(ctx.channel.id) == config['permissions']['listeningChannelId']:
         return False
-    if not str(message.channel.id) == config['permissions']['listeningChannelId']:
-        return False
-    if not config['permissions']['allowedRole'] in [y.name for y in message.author.roles]:
+
+    role = discord.utils.get(ctx.guild.roles, name=config['permissions']['allowedRole'])
+    if int(role.id) not in ctx.author.roles:
         return False
 
     return True
@@ -98,4 +106,4 @@ def __output_log_console(output):
     logger.info(output)
 
 
-client.run(config['general']['botToken'])
+bot.start()
