@@ -2,6 +2,10 @@
 
 Highly configurable client bot designed to be used by Discord server admins to allow them to interface with a server utilizing the SSH protocol.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/EvinRWatson/ReSO-Bot/master/ReSO_Bot_Logo.png" width="300" height="300"/>
+</p>
+
 Recommended use case for this bot it between your discord server and another server that resides within your home network, such as a home gaming or automation server. This is not meant to be a replacement for setting up a legitimate production server using indiustry standard server communication protocols such as: RPC or HTTP(s).
 
 ### Functionality:
