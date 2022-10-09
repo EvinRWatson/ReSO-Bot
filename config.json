@@ -1,7 +1,7 @@
 {
     "general" : {
         "botToken": "",
-        "listeningCommand" : "!ReSO"
+        "guildId" : ""
     },
     "permissions" : {
         "listeningChannelId" : "",
