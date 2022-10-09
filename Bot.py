@@ -38,7 +38,7 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, params: str):
     await ctx.send(f'Received Command Parameters: {params}')
 
-    if not __valid_command(ctx, params):
+    if not __valid_command(ctx):
         await ctx.send('Invalid Command')
         return
 
