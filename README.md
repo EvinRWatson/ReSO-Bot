@@ -20,15 +20,20 @@ Recommended use case for this bot it between your discord server and another ser
 ## Installation
 
 ### Setup 
-[Manual](/Docs/Manual_Install.MD)
 
-[Docker](/Docs/Docker_Install.MD)
+[Docker](/Docs/Docker_Install.MD) (Recommended)
+
+[Manual](/Docs/Manual_Install.MD)
 
 ### Reference
 
 [Configuration](/Docs/Configuration.MD)
 
 [SSH](/Docs/SSH_Setup.MD)
+
+#### Have a problem, or want to request a feature?
+
+[Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)
 
 
 
