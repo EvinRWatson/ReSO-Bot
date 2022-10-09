@@ -17,5 +17,18 @@ Recommended use case for this bot it between your discord server and another ser
 - Can only use commands that the server user has permissions to run
 - Can only grab files from directories that the server user has access to
 
-## Docs
-[Setup Documentation](/SETUP.MD)
+## Installation
+
+### Setup 
+
+[Docker](/Docs/Docker_Install.MD) (Recommended)
+
+[Manual](/Docs/Manual_Install.MD)
+
+### Reference
+
+[Configuration](/Docs/Configuration.MD)
+
+[SSH](/Docs/SSH_Setup.MD)
+
+#### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)
