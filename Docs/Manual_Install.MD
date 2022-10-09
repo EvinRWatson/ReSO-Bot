@@ -4,7 +4,7 @@
 
 ## Install:
     
-[Python](https://www.python.org/downloads/), [PIP](https://pypi.org/project/pip/), and [Discord.py](https://discordpy.readthedocs.io/en/stable/intro.html)
+ - [Python](https://www.python.org/downloads/), [PIP](https://pypi.org/project/pip/), and [Discord.py](https://discordpy.readthedocs.io/en/stable/intro.html)
 
 Alternatively run these commands (Debian/Ubuntu based Linux distributions only):
     
@@ -15,16 +15,12 @@ sudo apt-get install python3.9 python3-pip
 python3.9 -m pip install -U discord.py
 ~~~
 
-## Establish an SSH connection between the client and the intended server
+## Establish an [SSH Connection](SSH_Setup.MD)
 
-[SSH Setup](SSH_Setup.MD)
-
-## Configure file(s):
-
-[Configuration](Configuration.MD)
+## Edit [configuration](Configuration.MD) files:
 
 ## Run the bot
-~~~
-python3.9 Bot.py
-~~~
+
+    python3.9 Bot.py
+
 

@@ -31,9 +31,7 @@ Recommended use case for this bot it between your discord server and another ser
 
 [SSH](/Docs/SSH_Setup.MD)
 
-#### Have a problem, or want to request a feature?
-
-[Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)
+#### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)
 
 
 
