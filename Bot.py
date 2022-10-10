@@ -1,8 +1,11 @@
+import json
+import logging
+import os
+import subprocess
+
 import discord
 import interactions
-import logging
-import json
-import subprocess
+from interactions.ext.files import command_send
 
 print('Initializing Logger')
 logger = logging.getLogger('discord')
@@ -38,8 +41,9 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, params: str):
     await ctx.send(f'Received Command Parameters: {params}')
 
-    if not __valid_command(ctx):
-        await ctx.send('Invalid Command')
+    invalid_reasons = __check_invalid_use(ctx, params)
+    if invalid_reasons != "":
+        await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
     command = params.split(" ")[0]
@@ -56,25 +60,27 @@ async def reso(ctx: interactions.CommandContext, params: str):
         if file["name"] == command:
             await ctx.send(f'Running File Fetch: {file["name"]}')
             end_file = __fetch_file(file)
-            #send_channel = client.get_channel(int(config['file_fetch']['fileDropLocationChannelId']))
-            #await send_channel.send(file=end_file)
-            await ctx.send('Complete')
+            await command_send(ctx, file["name"], files=end_file)
             return
 
     __output_log_console('Command not found: {}')
 
 
-def __valid_command(ctx):
-    if ctx.author == bot.me.name:
-        return False
+def __check_invalid_use(ctx, params):
+    invalid_reasons = ""
+
     if not str(ctx.channel.id) == config['permissions']['listeningChannelId']:
-        return False
+        invalid_reasons += "Invalid Channel\n"
 
     role = discord.utils.get(ctx.guild.roles, name=config['permissions']['allowedRole'])
     if int(role.id) not in ctx.author.roles:
-        return False
+        invalid_reasons += "Invalid Role\n"
 
-    return True
+    invalid_characters = ["&", ";"]
+    if any(character in params for character in invalid_characters):
+        invalid_reasons += "Invalid Characters\n"
+
+    return invalid_reasons
 
 
 def __call_script(script, params):
@@ -96,8 +102,10 @@ def __fetch_file(file):
 
     subprocess.run(["scp", f"{username}@{host}:{file_location}", file_destination])
 
-    file_path = f'{file_destination}/latest.log'
-    end_file = discord.File(file_path)
+    file_name = os.path.basename(file_location)
+    file_path = f'{file_destination}/{file_name}'
+
+    end_file = interactions.File(file_path)
     return end_file
 
 
