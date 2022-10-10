@@ -8,12 +8,10 @@
         "allowedRole" : ""
     },
     "file_fetch" : {
-        "fileDropLocationChannelId" : "",
         "fileDropClientFilePath" : ""
     },
     "ssh" : {
         "Host": "",
-        "Username": "",
-        "Passwd": ""
+        "Username": ""
     }
 }
