@@ -38,8 +38,9 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, params: str):
     await ctx.send(f'Received Command Parameters: {params}')
 
-    if not __valid_command(ctx):
-        await ctx.send('Invalid Command')
+    invalid_reasons = __check_invalid_use(ctx, params)
+    if invalid_reasons != "":
+        await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
     command = params.split(" ")[0]
@@ -64,17 +65,21 @@ async def reso(ctx: interactions.CommandContext, params: str):
     __output_log_console('Command not found: {}')
 
 
-def __valid_command(ctx):
-    if ctx.author == bot.me.name:
-        return False
+def __check_invalid_use(ctx, params):
+    invalid_reasons = ""
+
     if not str(ctx.channel.id) == config['permissions']['listeningChannelId']:
-        return False
+        invalid_reasons += "Invalid Channel\n"
 
     role = discord.utils.get(ctx.guild.roles, name=config['permissions']['allowedRole'])
     if int(role.id) not in ctx.author.roles:
-        return False
+        invalid_reasons += "Invalid Role\n"
 
-    return True
+    invalid_characters = ["&", ";"]
+    if any(character in params for character in invalid_characters):
+        invalid_reasons += "Invalid Characters\n"
+
+    return invalid_reasons
 
 
 def __call_script(script, params):
