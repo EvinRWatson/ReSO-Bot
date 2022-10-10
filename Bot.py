@@ -1,8 +1,11 @@
+import json
+import logging
+import os
+import subprocess
+
 import discord
 import interactions
-import logging
-import json
-import subprocess
+from interactions.ext.files import command_send
 
 print('Initializing Logger')
 logger = logging.getLogger('discord')
@@ -57,9 +60,7 @@ async def reso(ctx: interactions.CommandContext, params: str):
         if file["name"] == command:
             await ctx.send(f'Running File Fetch: {file["name"]}')
             end_file = __fetch_file(file)
-            #send_channel = client.get_channel(int(config['file_fetch']['fileDropLocationChannelId']))
-            #await send_channel.send(file=end_file)
-            await ctx.send('Complete')
+            await command_send(ctx, file["name"], files=end_file)
             return
 
     __output_log_console('Command not found: {}')
@@ -101,8 +102,10 @@ def __fetch_file(file):
 
     subprocess.run(["scp", f"{username}@{host}:{file_location}", file_destination])
 
-    file_path = f'{file_destination}/latest.log'
-    end_file = discord.File(file_path)
+    file_name = os.path.basename(file_location)
+    file_path = f'{file_destination}/{file_name}'
+
+    end_file = interactions.File(file_path)
     return end_file
 
 
