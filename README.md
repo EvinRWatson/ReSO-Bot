@@ -13,7 +13,6 @@ Recommended use case for this bot it between your discord server and another ser
 - Grab files from pre-designated locations
 
 ### Limitations:
-- Can only connect to one server per bot instance (Multi-server configurations coming later)
 - Can only use commands that the server user has permissions to run
 - Can only grab files from directories that the server user has access to
 
