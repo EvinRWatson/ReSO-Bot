@@ -13,7 +13,6 @@ Recommended use case for this bot it between your discord server and another ser
 - Grab files from pre-designated locations
 
 ### Limitations:
-- Can only connect to one server per bot instance (Multi-server configurations coming later)
 - Can only use commands that the server user has permissions to run
 - Can only grab files from directories that the server user has access to
 
@@ -30,5 +29,19 @@ Recommended use case for this bot it between your discord server and another ser
 [Configuration](/Docs/Configuration.MD)
 
 [SSH](/Docs/SSH_Setup.MD)
+
+## Using the bot
+
+After completing installation, using the bot requires using the '/reso' command, passing in these parameters in the following order:
+
+- server-name (as outlined in servers.json)
+- command-name (as outlined in scripts.json)
+- parameters (if applicable to the command)
+
+Command Format:
+
+    /reso <server-name> <command-name> <parameters>
+
+Note: Everything after '/reso' must be enclosed in the 'bot params' box as shown in the input box
 
 #### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)

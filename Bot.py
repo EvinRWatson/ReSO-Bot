@@ -17,6 +17,9 @@ logger.addHandler(handler)
 print('Loading Config')
 config = json.load(open('config.json'))
 
+print('Loading Servers')
+servers = json.load(open('servers.json'))
+
 print('Loading Scripts and Files')
 scripts = json.load(open('scripts.json'))
 files = json.load(open('fetch_files.json'))
@@ -30,7 +33,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     description="Command to trigger ReSO Bot interpretation",
     options=[
         interactions.Option(
-            name="params",
+            name="bot_params",
             description="Parameters",
             type=interactions.OptionType.STRING,
             required=True
@@ -38,28 +41,30 @@ bot = interactions.Client(token=config['general']['botToken'],
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, params: str):
-    await ctx.send(f'Received Command Parameters: {params}')
+async def reso(ctx: interactions.CommandContext, bot_params: str):
+    await ctx.send(f'Received Command Parameters: {bot_params}')
 
-    invalid_reasons = __check_invalid_use(ctx, params)
+    invalid_reasons = __check_invalid_use(ctx, bot_params)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
-    command = params.split(" ")[0]
-    params = params.replace(f'{command} ', '')
+    server_name = bot_params.split(" ")[0]
+    server_command = bot_params.split(" ")[1]
+    command_parameters = bot_params.replace(server_name, '').replace(server_command, '').strip()
+    server = __get_server_by_name(server_name)
 
     for script in scripts['scripts']:
-        if script["name"] == command:
+        if script["name"] == server_command:
             await ctx.send(f'Running script: {script["name"]}')
-            __call_script(script, params)
+            __call_script(server, script, command_parameters)
             await ctx.send('Complete')
             return
 
     for file in files['files']:
-        if file["name"] == command:
+        if file["name"] == server_command:
             await ctx.send(f'Running File Fetch: {file["name"]}')
-            end_file = __fetch_file(file)
+            end_file = __fetch_file(server, file)
             await command_send(ctx, file["name"], files=end_file)
             return
 
@@ -83,24 +88,20 @@ def __check_invalid_use(ctx, params):
     return invalid_reasons
 
 
-def __call_script(script, params):
+def __call_script(server, script, params):
     server_command = f'{script["command"]} "{params.strip()}"'
-    username = config['ssh']['Username']
-    host = config['ssh']['Host']
-    subprocess.run(["ssh", f"{username}@{host}", server_command],
+    subprocess.run(["ssh", f"{server['username']}@{server['host']}", server_command],
                    shell=False,
                    stdout=subprocess.PIPE,
                    stderr=subprocess.PIPE,
                    check=False)
 
 
-def __fetch_file(file):
+def __fetch_file(server, file):
     file_location = file['location']
     file_destination = config['file_fetch']['fileDropClientFilePath']
-    username = config['ssh']['Username']
-    host = config['ssh']['Host']
 
-    subprocess.run(["scp", f"{username}@{host}:{file_location}", file_destination])
+    subprocess.run(["scp", f"{server['username']}@{server['host']}:{file_location}", file_destination])
 
     file_name = os.path.basename(file_location)
     file_path = f'{file_destination}/{file_name}'
@@ -112,6 +113,12 @@ def __fetch_file(file):
 def __output_log_console(output):
     print(output)
     logger.info(output)
+
+
+def __get_server_by_name(name):
+    for server in servers['servers']:
+        if name == server['name']:
+            return server
 
 
 bot.start()
