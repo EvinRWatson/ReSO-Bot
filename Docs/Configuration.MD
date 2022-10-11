@@ -1,11 +1,22 @@
 # Configuration options (config.json):
 
+It is recommended to configure the files in the following order:
+1. config.json
+2. servers.json
+3. scripts.json
+
 ## General:
 
 ### botToken:
 The access token for your Discord Bot instance. Bots can be created through the
 [Discord Dev Portal](https://discord.com/developers/). For more detailed instructions,
 follow this guide by [Discord.py](https://discordpy.readthedocs.io/en/stable/discord.html)!
+
+When setting up the bot, ensure to add the 'bot' scope and within that you will need these permissions:
+- Read Messages/View Channels
+- Send Messages
+- Attach Files
+- Use Slash Commands
 
 ### guildId
 The ID for the server the bot will be running on. You can get this by right-clicking on the server
@@ -44,7 +55,7 @@ The name you assign the server, this determines which location the desired comma
 
 ### host:
 The host or IP of the server you are connecting to through the bot. This can be an IP address
-or a host name if specified in your local hosts file, or network DNS.
+or a host name if specified in your hosts file, or DNS.
 
 ### username:
 The username of the intended user on the server. It is not advised to use the root user, instead

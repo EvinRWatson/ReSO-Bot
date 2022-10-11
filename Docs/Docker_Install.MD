@@ -4,7 +4,7 @@
 
 ## Install
 
-- [Docker]() or [Docker Desktop]()
+- [Docker Desktop](https://www.docker.com/) (Recommended) or [Docker](https://github.com/docker/cli)
 
 ## Edit Configurations
 
