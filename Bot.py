@@ -51,7 +51,11 @@ async def reso(ctx: interactions.CommandContext, input: str):
     server_name = input.split(" ")[0]
     server_command = input.split(" ")[1]
     command_parameters = input.replace(server_name, '').replace(server_command, '').strip()
+
     server = __get_server_by_name(server_name)
+    if server is None:
+        await ctx.send(f"Server '{server_name}' Not Found")
+        return
 
     for script in scripts['scripts']:
         if script["name"] == server_command:
@@ -66,7 +70,7 @@ async def reso(ctx: interactions.CommandContext, input: str):
                 await command_send(ctx, script["name"], files=end_file)
                 return
 
-    __output_log_console('Command not found: {}')
+    await ctx.send(f"Command '{server_command}' Not Found")
 
 
 def __check_invalid_use(ctx, params):
@@ -117,6 +121,7 @@ def __get_server_by_name(name):
     for server in servers['servers']:
         if name == server['name']:
             return server
+    return None
 
 
 bot.start()
