@@ -20,9 +20,8 @@ config = json.load(open('config.json'))
 print('Loading Servers')
 servers = json.load(open('servers.json'))
 
-print('Loading Scripts and Files')
+print('Loading Scripts')
 scripts = json.load(open('scripts.json'))
-files = json.load(open('fetch_files.json'))
 
 bot = interactions.Client(token=config['general']['botToken'],
                           default_scope=config['general']['guildId'])
@@ -56,17 +55,16 @@ async def reso(ctx: interactions.CommandContext, input: str):
 
     for script in scripts['scripts']:
         if script["name"] == server_command:
-            await ctx.send(f'Running script: {script["name"]}')
-            __call_script(server, script, command_parameters)
-            await ctx.send('Complete')
-            return
-
-    for file in files['files']:
-        if file["name"] == server_command:
-            await ctx.send(f'Running File Fetch: {file["name"]}')
-            end_file = __fetch_file(server, file)
-            await command_send(ctx, file["name"], files=end_file)
-            return
+            if script['type'] == 'command':
+                await ctx.send(f"Running {script['type']}: {script['name']}")
+                __call_script(server, script, command_parameters)
+                await ctx.send('Complete')
+                return
+            if script['type'] == 'fetch':
+                await ctx.send(f"Running {script['type']}: {script['name']}")
+                end_file = __fetch_file(server, script)
+                await command_send(ctx, script["name"], files=end_file)
+                return
 
     __output_log_console('Command not found: {}')
 
