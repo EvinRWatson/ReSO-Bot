@@ -33,7 +33,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     description="Command to trigger ReSO Bot interpretation",
     options=[
         interactions.Option(
-            name="bot_params",
+            name="input",
             description="Parameters",
             type=interactions.OptionType.STRING,
             required=True
@@ -41,17 +41,17 @@ bot = interactions.Client(token=config['general']['botToken'],
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, bot_params: str):
-    await ctx.send(f'Received Command Parameters: {bot_params}')
+async def reso(ctx: interactions.CommandContext, input: str):
+    await ctx.send(f'Received Command Parameters: {input}')
 
-    invalid_reasons = __check_invalid_use(ctx, bot_params)
+    invalid_reasons = __check_invalid_use(ctx, input)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
-    server_name = bot_params.split(" ")[0]
-    server_command = bot_params.split(" ")[1]
-    command_parameters = bot_params.replace(server_name, '').replace(server_command, '').strip()
+    server_name = input.split(" ")[0]
+    server_command = input.split(" ")[1]
+    command_parameters = input.replace(server_name, '').replace(server_command, '').strip()
     server = __get_server_by_name(server_name)
 
     for script in scripts['scripts']:

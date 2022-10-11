@@ -42,6 +42,6 @@ Command Format:
 
     /reso <server-name> <command-name> <parameters>
 
-Note: Everything after '/reso' must be enclosed in the 'bot params' box as shown in the input box
+Note: Everything after '/reso' must be enclosed in the 'input' box as shown in the input box
 
 #### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)
