@@ -48,7 +48,7 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, input: str):
     await ctx.send(f'Received Command Parameters: {input}')
 
-    invalid_reasons = __check_invalid_use(ctx, input)
+    invalid_reasons = __check_invalid_user(ctx, input)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
@@ -78,7 +78,7 @@ async def reso(ctx: interactions.CommandContext, input: str):
     await ctx.send(f"Command '{server_command}' Not Found")
 
 
-def __check_invalid_use(ctx, params):
+def __check_invalid_user(ctx, params):
     invalid_reasons = ""
 
     if not str(ctx.channel.id) == config['permissions']['listeningChannelId']:
