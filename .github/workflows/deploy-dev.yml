@@ -18,12 +18,12 @@ jobs:
 
     - name: Build the Docker images
       run: |
-        docker build --platform amd64 --tag evinrwatson/reso:dev_amd64 .
-        docker build --platform arm --tag evinrwatson/reso:dev_arm .
-        docker build --platform arm64 --tag evinrwatson/reso:dev_arm64 .
+        docker build --platform amd64 --tag evinrwatson/reso-bot:dev_amd64 .
+        docker build --platform arm --tag evinrwatson/reso-bot:dev_arm .
+        docker build --platform arm64 --tag evinrwatson/reso-bot:dev_arm64 .
 
     - name: Deploy to Docker Hub
       run: |
-        docker push evinrwatson/reso:dev_amd64
-        docker push evinrwatson/reso:dev_arm
-        docker push evinrwatson/reso:dev_arm64
+        docker push evinrwatson/reso-bot:dev_amd64
+        docker push evinrwatson/reso-bot:dev_arm
+        docker push evinrwatson/reso-bot:dev_arm64
