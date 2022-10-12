@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import subprocess
+import time
 
 import discord
 import interactions
@@ -22,6 +23,10 @@ servers = json.load(open('servers.json'))
 
 print('Loading Scripts')
 scripts = json.load(open('scripts.json'))
+
+while config['general']['botToken'] == "":
+    print("Bot Token Empty. Restart bot ot after configuration")
+    time.sleep(60)
 
 bot = interactions.Client(token=config['general']['botToken'],
                           default_scope=config['general']['guildId'])
