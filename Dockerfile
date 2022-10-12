@@ -2,7 +2,7 @@ FROM python:3
 
 ADD . /
 
-RUN apt-get update
+RUN apt-get update -y
 RUN python3 -m pip install -U discord.py
 RUN python3 -m pip install -U discord-py-interactions
 RUN python3 -m pip install -U interactions-files
