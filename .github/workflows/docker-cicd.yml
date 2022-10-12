@@ -16,10 +16,14 @@ jobs:
     - name: Docker Login
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       
-    - name: Build the Docker image
+    - name: Build the Docker images
       run: |
-        docker build --tag evinrwatson/reso:latest .
+        docker build --platform amd64 --tag evinrwatson/reso:latest_amd64 .
+        docker build --platform arm --tag evinrwatson/reso:latest_arm .
+        docker build --platform arm64 --tag evinrwatson/reso:latest_arm64 .
         
     - name: Deploy to Docker Hub
       run: |
-        docker push evinrwatson/reso:latest
+        docker push evinrwatson/reso:latest_amd64
+        docker push evinrwatson/reso:latest_arm
+        docker push evinrwatson/reso:latest_arm64
