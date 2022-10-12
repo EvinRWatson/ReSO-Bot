@@ -1,11 +1,22 @@
 # Configuration options (config.json):
 
+It is recommended to configure the files in the following order:
+1. config.json
+2. servers.json
+3. scripts.json
+
 ## General:
 
 ### botToken:
 The access token for your Discord Bot instance. Bots can be created through the
 [Discord Dev Portal](https://discord.com/developers/). For more detailed instructions,
 follow this guide by [Discord.py](https://discordpy.readthedocs.io/en/stable/discord.html)!
+
+When setting up the bot, ensure to add the 'bot' scope and within that you will need these permissions:
+- Read Messages/View Channels
+- Send Messages
+- Attach Files
+- Use Slash Commands
 
 ### guildId
 The ID for the server the bot will be running on. You can get this by right-clicking on the server
@@ -26,11 +37,6 @@ channel will ensure that no one who isn't explicitly allowed can operate the bot
 
 ## File Fetch:
 
-### fileDropLocationChannelId:
-The ID of the channel that you want files to be dropped when using the file fetching functionality.
-You may want this to be different to the listening channel because you might have Admins who are
-able to use the bot, and some that aren't. So you can have a bot operator use the file fetch command
-to grab a log file, and send it to a channel that all admins can view.
 
 ### fileDropClientFilePath:
 The temporary location of the fetched file in the bot client's operating system. This location
@@ -41,39 +47,51 @@ is arbitrary, but make sure that the bot has permissions to access that director
 C:/Users/Bob/fetch
 /home/bob/temp
 ~~~
-## SSH
 
-### Host:
+# Target Servers (servers.json)
+
+### name:
+The name you assign the server, this determines which location the desired command gets send to when using the bot
+
+### host:
 The host or IP of the server you are connecting to through the bot. This can be an IP address
-or a host name if specified in your local hosts file, or network DNS.
+or a host name if specified in your hosts file, or DNS.
 
-### Username:
+### username:
 The username of the intended user on the server. It is not advised to use the root user, instead
 set up a user specifically for the bot and assign permissions accordingly to prevent malicious actors
 from doing some real damage to your server.
-
-### Passwd (Not currently supported):
-The password corresponding to the Username above. Instead of storing the password here in plain
-text. Set up a password-less key when setting up your initial SSH connection.
 
 # Scripts (scripts.json)
 
 ## Parameters
 
 ### name
-Name of the bot command you want to use to trigger the command below. No spaces are allowed. 
+Name of the bot command you want to use to trigger the command below. Spaces are not allowed
 
 Example:
 
     backup
 
-### command
+### type
+Type of command used, options are:
+- command: To run the command specified in the following 'command' variable
+- fetch: To retrieve the file, specified in the following 'location' variable
+
+### command (when 'type' is 'command')
 Command to run on the server. Make sure the bot user on the server has
 permissions to run that command, or it will not work.
 
 Example:
 
     sh /home/bob/backup.sh
+
+### location (when 'type' is 'fetch')
+Location of the file you want to fetch, associated with this command.
+
+Example:
+
+    /home/bob//App/logs/latest.log
 
 ## File Structure
 The file follows basic JSON formatting. To add a command, simply add a comma after the closing
@@ -85,37 +103,14 @@ Example File:
 {
   "scripts" : [
     {
-      "name": "example",
-      "command": "sh /temp/example.sh"
+      "name": "restart",
+      "type": "command",
+      "command": "sh /home/bob/App/restart.sh"
     },
     {
-      "name": "backup",
-      "command": "sh /home/bob/backup.sh"
+      "name": "get_log",
+      "type": "fetch",
+      "location": "/home/bob/App/logs/latest.log"
     }
-  ]
 }
 ~~~
-
-# File Fetch (fetch_files.json)
-
-## Parameters
-
-### name
-Name of the bot command you want to use to trigger the fetch of the 
-specified file below. No spaces are allowed.
-
-Example:
-
-    game_log
-
-### command
-Location of the file you want to grab associated with the above name.
-Make sure the bot user on the server has permissions to access to the
-specified directory/file, or it will not work 
-
-Example:
-
-    /home/bob/minecraft/logs/latest.log
-
-## File Structure
-This file follows the same structure as the scripts.json file

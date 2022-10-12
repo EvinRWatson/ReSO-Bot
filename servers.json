@@ -1,9 +1,9 @@
 {
   "servers" : [
   {
-        "name": "",
-        "username": "",
-        "host": ""
+        "name": "test-example",
+        "username": "bob",
+        "host": "1.1.1.1"
   }
   ]
 }

@@ -20,9 +20,8 @@ config = json.load(open('config.json'))
 print('Loading Servers')
 servers = json.load(open('servers.json'))
 
-print('Loading Scripts and Files')
+print('Loading Scripts')
 scripts = json.load(open('scripts.json'))
-files = json.load(open('fetch_files.json'))
 
 bot = interactions.Client(token=config['general']['botToken'],
                           default_scope=config['general']['guildId'])
@@ -33,7 +32,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     description="Command to trigger ReSO Bot interpretation",
     options=[
         interactions.Option(
-            name="bot_params",
+            name="input",
             description="Parameters",
             type=interactions.OptionType.STRING,
             required=True
@@ -41,34 +40,37 @@ bot = interactions.Client(token=config['general']['botToken'],
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, bot_params: str):
-    await ctx.send(f'Received Command Parameters: {bot_params}')
+async def reso(ctx: interactions.CommandContext, input: str):
+    await ctx.send(f'Received Command Parameters: {input}')
 
-    invalid_reasons = __check_invalid_use(ctx, bot_params)
+    invalid_reasons = __check_invalid_use(ctx, input)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
-    server_name = bot_params.split(" ")[0]
-    server_command = bot_params.split(" ")[1]
-    command_parameters = bot_params.replace(server_name, '').replace(server_command, '').strip()
+    server_name = input.split(" ")[0]
+    server_command = input.split(" ")[1]
+    command_parameters = input.replace(server_name, '').replace(server_command, '').strip()
+
     server = __get_server_by_name(server_name)
+    if server is None:
+        await ctx.send(f"Server '{server_name}' Not Found")
+        return
 
     for script in scripts['scripts']:
         if script["name"] == server_command:
-            await ctx.send(f'Running script: {script["name"]}')
-            __call_script(server, script, command_parameters)
-            await ctx.send('Complete')
-            return
+            if script['type'] == 'command':
+                await ctx.send(f"Running {script['type']}: {script['name']}")
+                __call_script(server, script, command_parameters)
+                await ctx.send('Complete')
+                return
+            if script['type'] == 'fetch':
+                await ctx.send(f"Running {script['type']}: {script['name']}")
+                end_file = __fetch_file(server, script)
+                await command_send(ctx, script["name"], files=end_file)
+                return
 
-    for file in files['files']:
-        if file["name"] == server_command:
-            await ctx.send(f'Running File Fetch: {file["name"]}')
-            end_file = __fetch_file(server, file)
-            await command_send(ctx, file["name"], files=end_file)
-            return
-
-    __output_log_console('Command not found: {}')
+    await ctx.send(f"Command '{server_command}' Not Found")
 
 
 def __check_invalid_use(ctx, params):
@@ -119,6 +121,7 @@ def __get_server_by_name(name):
     for server in servers['servers']:
         if name == server['name']:
             return server
+    return None
 
 
 bot.start()
