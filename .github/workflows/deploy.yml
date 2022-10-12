@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  build:
+  deploy:
 
     runs-on: ubuntu-latest
 

@@ -1,0 +1,29 @@
+name: DeployDev
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Docker Login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build the Docker images
+      run: |
+        docker build --platform amd64 --tag evinrwatson/reso:dev_amd64 .
+        docker build --platform arm --tag evinrwatson/reso:dev_arm .
+        docker build --platform arm64 --tag evinrwatson/reso:dev_arm64 .
+
+    - name: Deploy to Docker Hub
+      run: |
+        docker push evinrwatson/reso:dev_amd64
+        docker push evinrwatson/reso:dev_arm
+        docker push evinrwatson/reso:dev_arm64
