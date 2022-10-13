@@ -11,13 +11,13 @@ print('Loading:')
 print('\tLogger')
 logger = Bot_Func.initialize_logger()
 
-print('\tLoading Config')
+print('\tConfig')
 config = json.load(open('config.json'))
 
-print('\tLoading Servers')
+print('\tServers')
 servers = json.load(open('servers.json'))
 
-print('\tLoading Scripts')
+print('\tScripts')
 scripts = json.load(open('scripts.json'))
 
 print('Finished Loading')
@@ -33,7 +33,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     description="Command to trigger ReSO Bot interpretation",
     options=[
         interactions.Option(
-            name="input",
+            name="bot_parameters",
             description="Parameters",
             type=interactions.OptionType.STRING,
             required=True
@@ -41,17 +41,17 @@ bot = interactions.Client(token=config['general']['botToken'],
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, input: str):
-    await ctx.send(f'Received Command Parameters: {input}')
+async def reso(ctx: interactions.CommandContext, bot_parameters: str):
+    await ctx.send(f'Received Command Parameters: {bot_parameters}')
 
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, input)
+    server_name = bot_parameters.split(" ")[0]
+    server_command = bot_parameters.split(" ")[1]
+    command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
+
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, bot_parameters)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
-
-    server_name = input.split(" ")[0]
-    server_command = input.split(" ")[1]
-    command_parameters = input.replace(server_name, '').replace(server_command, '').strip()
 
     server = Bot_Func.get_server_by_name(server_name, servers)
     if server is None:
@@ -73,5 +73,5 @@ async def reso(ctx: interactions.CommandContext, input: str):
 
     await ctx.send(f"Command '{server_command}' Not Found")
 
-
+print('Start Client')
 bot.start()

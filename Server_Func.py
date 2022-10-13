@@ -1,4 +1,7 @@
+import os
 import subprocess
+
+from discord import interactions
 
 
 def call_script(server, script, params):

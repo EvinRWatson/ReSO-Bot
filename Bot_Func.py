@@ -39,5 +39,5 @@ def initialize_logger():
 
 def prevent_start_without_token(config):
     while config['general']['botToken'] == "":
-        print("Bot Token Empty. Restart bot ot after configuration")
+        print("Bot Token Empty. Restart bot after configuration")
         time.sleep(60)
