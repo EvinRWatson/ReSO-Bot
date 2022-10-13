@@ -1,4 +1,4 @@
-import json
+import yaml
 
 import interactions
 from interactions.ext.files import command_send
@@ -11,13 +11,7 @@ print('\tLogger')
 logger = Bot_Func.initialize_logger()
 
 print('\tConfig')
-config = json.load(open('config.json'))
-
-print('\tServers')
-servers = json.load(open('servers.json'))
-
-print('\tScripts')
-scripts = json.load(open('scripts.json'))
+config = yaml.safe_load(open('config.yml'))
 
 print('Finished Loading')
 Bot_Func.prevent_start_without_token(config)
