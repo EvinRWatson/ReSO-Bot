@@ -1,36 +1,29 @@
 import json
-import logging
-import os
-import subprocess
 import time
 
-import discord
 import interactions
 from interactions.ext.files import command_send
 
 import Bot_Func
 import Server_Func
 
-print('Initializing Logger')
-logger = logging.getLogger('discord')
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+print('Loading:')
+print('\tLogger')
+logger = Bot_Func.initialize_logger()
 
-print('Loading Config')
+print('\tLoading Config')
 config = json.load(open('config.json'))
 
-print('Loading Servers')
+print('\tLoading Servers')
 servers = json.load(open('servers.json'))
 
-print('Loading Scripts')
+print('\tLoading Scripts')
 scripts = json.load(open('scripts.json'))
 
-while config['general']['botToken'] == "":
-    print("Bot Token Empty. Restart bot ot after configuration")
-    time.sleep(60)
+print('Finished Loading')
+Bot_Func.prevent_start_without_token(config)
 
+print('Initialize Client')
 bot = interactions.Client(token=config['general']['botToken'],
                           default_scope=config['general']['guildId'])
 
