@@ -2,7 +2,6 @@ import os
 import subprocess
 
 import interactions
-from interactions.ext.files import command_send
 
 
 def run_command(server, command, params):
