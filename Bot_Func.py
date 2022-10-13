@@ -7,10 +7,10 @@ import discord
 def check_invalid_user(ctx, config, params):
     invalid_reasons = ""
 
-    if not str(ctx.channel.id) == config['permissions']['listeningChannelId']:
+    if not str(ctx.channel.id) == config['general']['listeningChannelId']:
         invalid_reasons += "Invalid Channel\n"
 
-    role = discord.utils.get(ctx.guild.roles, name=config['permissions']['allowedRole'])
+    role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
     if int(role.id) not in ctx.author.roles:
         invalid_reasons += "Invalid Role\n"
 
@@ -22,7 +22,7 @@ def check_invalid_user(ctx, config, params):
 
 
 def get_server_by_name(name, servers):
-    for server in servers['servers']:
+    for server in servers:
         if name == server['name']:
             return server
     return None
@@ -38,6 +38,6 @@ def initialize_logger():
 
 
 def prevent_start_without_token(config):
-    while config['general']['botToken'] == "":
+    while str(config['general']['botToken']) == "":
         print("Bot Token Empty. Restart bot after configuration")
         time.sleep(60)

@@ -15,7 +15,7 @@ def run_command(server, command, params):
 
 def run_fetch(server, file, config):
     file_location = file['location']
-    file_destination = config['file_fetch']['fileDropClientFilePath']
+    file_destination = config['general']['fileDropClientFilePath']
 
     subprocess.run(["scp", f"{server['username']}@{server['host']}:{file_location}", file_destination])
 

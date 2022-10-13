@@ -35,6 +35,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     dm_permission=False
 )
 async def reso(ctx: interactions.CommandContext, bot_parameters: str):
+    await ctx.send('running')
     invalid_reasons = Bot_Func.check_invalid_user(ctx, config, bot_parameters)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
@@ -49,12 +50,12 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
             'There seems to be an error with your command format. If you need help please refer to the documentation')
         return
 
-    server = Bot_Func.get_server_by_name(server_name, servers)
+    server = Bot_Func.get_server_by_name(server_name, config['servers'])
     if server is None:
         await ctx.send(f"Server '{server_name}' Not Found")
         return
 
-    for script in scripts['scripts']:
+    for script in config['scripts']:
         if script["name"] == server_command:
             if script['type'] == 'command':
                 await ctx.send(f"Running {script['type']}: {script['name']}")
