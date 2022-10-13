@@ -81,9 +81,4 @@ async def reso(ctx: interactions.CommandContext, input: str):
     await ctx.send(f"Command '{server_command}' Not Found")
 
 
-def __output_log_console(output):
-    print(output)
-    logger.info(output)
-
-
 bot.start()
