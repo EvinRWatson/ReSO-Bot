@@ -1,39 +1,30 @@
 # Docker Install (Container)
 
-## Download/Clone the repository
+## Install [Docker](https://github.com/docker/cli)
 
-## Install
+## Download the desired image
 
-- [Docker Desktop](https://www.docker.com/) (Recommended) or [Docker](https://github.com/docker/cli)
+Docker images are stored in our [Docker Hub](https://hub.docker.com/repository/docker/evinrwatson/reso-bot).
+You can choose between stable(latest) and dev builds, as well as the system architecture.
+
+Architectures include:
+- arm64: Apple M1, AWS Graviton, Raspberry Pi 3/4 (64bit)
+- arm: Raspberry Pi (32bit)
+- amd64: x86/x64 Compatible CPU's (AMD/Intel)
+
+*Alternatively, you can also create your own Docker image by building the Dockerfile yourself. If you wish to do so, then follow [this](https://docs.docker.com/engine/reference/commandline/build/) guide* 
+
+## Run the image
+Once the image is running you can access the shell to complete installation
 
 ## Edit Configurations
+You can setup the bot as outlined in the [Configuration Guide](Configuration.MD) by using the packaged
+text editors (vim/nano) to edit the config files.
 
-- Follow the [Configuration Guide](Configuration.MD)
-
-## Build the image
-
-- From within the ReSO-bot folder that contains the Dockerfile, run this command
-    ~~~
-    docker build -t reso-bot .
-    ~~~
-## Run the image
-
-- Replace the <container_name> in the following command with whichever name you want 
-    ~~~
-    docker run -d --name <container_name> reso-bot
-    ~~~
-## Establish an SSH connection
-
-- Get the user and IP address or hostname of the server you wish to manage
-
-- Access the shell of the Docker container:
-  ~~~
-    docker exec -it <container_name> sh
-  ~~~
-  
-- Once in the shell follow the [SSH](SSH_Setup.MD) guide
-- Exit the shell
+## Establish SSH Connections
+Follow the [SSH Setup](SSH_Setup.MD) guide to set up a connection for each instance in the servers.json file.
 
 ## Restart the container
+Required for the bot to reload the configuration and connect to Discord
 
 ## Enjoy!
