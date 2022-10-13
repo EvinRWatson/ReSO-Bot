@@ -7,7 +7,7 @@ import discord
 def check_invalid_user(ctx, config, params):
     invalid_reasons = ""
 
-    if not str(ctx.channel.id) == config['general']['listeningChannelId']:
+    if not str(ctx.channel.id) == str(config['general']['listeningChannelId']):
         invalid_reasons += "Invalid Channel\n"
 
     role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])

@@ -18,7 +18,7 @@ Bot_Func.prevent_start_without_token(config)
 
 print('Initialize Client')
 bot = interactions.Client(token=config['general']['botToken'],
-                          default_scope=config['general']['guildId'])
+                          default_scope=str(config['general']['guildId']))
 
 
 @bot.command(
