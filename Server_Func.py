@@ -5,8 +5,8 @@ import interactions
 from interactions.ext.files import command_send
 
 
-def call_script(server, script, params):
-    server_command = f'{script["command"]} "{params.strip()}"'
+def run_command(server, command, params):
+    server_command = f'{command["command"]} "{params.strip()}"'
     subprocess.run(["ssh", f"{server['username']}@{server['host']}", server_command],
                    shell=False,
                    stdout=subprocess.PIPE,
@@ -14,7 +14,7 @@ def call_script(server, script, params):
                    check=False)
 
 
-def fetch_file(server, file, config):
+def run_fetch(server, file, config):
     file_location = file['location']
     file_destination = config['file_fetch']['fileDropClientFilePath']
 

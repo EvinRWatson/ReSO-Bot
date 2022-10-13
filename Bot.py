@@ -1,5 +1,4 @@
 import json
-import time
 
 import interactions
 from interactions.ext.files import command_send
@@ -42,15 +41,20 @@ bot = interactions.Client(token=config['general']['botToken'],
     dm_permission=False
 )
 async def reso(ctx: interactions.CommandContext, bot_parameters: str):
-    await ctx.send(f'Received Command Parameters: {bot_parameters}')
-
-    server_name = bot_parameters.split(" ")[0]
-    server_command = bot_parameters.split(" ")[1]
-    command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
-
     invalid_reasons = Bot_Func.check_invalid_user(ctx, config, bot_parameters)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
+        return
+
+    await ctx.send(f'Received Command Parameters: {bot_parameters}')
+
+    try:
+        server_name = bot_parameters.split(" ")[0]
+        server_command = bot_parameters.split(" ")[1]
+        command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
+    except IndexError:
+        await ctx.send(
+            'There seems to be an error with your command format. If you need help please refer to the documentation')
         return
 
     server = Bot_Func.get_server_by_name(server_name, servers)
@@ -62,16 +66,17 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
         if script["name"] == server_command:
             if script['type'] == 'command':
                 await ctx.send(f"Running {script['type']}: {script['name']}")
-                Server_Func.call_script(server, script, command_parameters)
+                Server_Func.run_command(server, script, command_parameters)
                 await ctx.send('Complete')
                 return
             if script['type'] == 'fetch':
                 await ctx.send(f"Running {script['type']}: {script['name']}")
-                end_file = Server_Func.fetch_file(server, script, config)
+                end_file = Server_Func.run_fetch(server, script, config)
                 await command_send(ctx, script["name"], files=end_file)
                 return
 
     await ctx.send(f"Command '{server_command}' Not Found")
+
 
 print('Start Client')
 bot.start()
