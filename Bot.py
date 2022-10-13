@@ -46,8 +46,6 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
-    await ctx.send(f'Received Command Parameters: {bot_parameters}')
-
     try:
         server_name = bot_parameters.split(" ")[0]
         server_command = bot_parameters.split(" ")[1]
