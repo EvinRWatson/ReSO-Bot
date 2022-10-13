@@ -48,7 +48,7 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     server_command = bot_parameters.split(" ")[1]
     command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
 
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, bot_parameters)
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config, bot_parameters)
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
