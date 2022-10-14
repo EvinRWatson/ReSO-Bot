@@ -1,7 +1,6 @@
 import yaml
 
 import interactions
-from interactions.ext.files import command_send
 
 import Bot_Func
 import Server_Func
@@ -13,7 +12,7 @@ logger = Bot_Func.initialize_logger()
 print('\tConfig')
 config = yaml.safe_load(open('config.yml'))
 
-print('Finished Loading')
+print('Checking for token')
 Bot_Func.prevent_start_without_token(config)
 
 print('Initialize Client')
@@ -55,20 +54,12 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
         await ctx.send(f"Server '{server_name}' Not Found")
         return
 
-    for script in config['scripts']:
-        if script["name"] == server_command:
-            if script['type'] == 'command':
-                await ctx.send(f"Running {script['type']}: {script['name']}")
-                Server_Func.run_command(server, script, command_parameters)
-                await ctx.send('Complete')
-                return
-            if script['type'] == 'fetch':
-                await ctx.send(f"Running {script['type']}: {script['name']}")
-                end_file = Server_Func.run_fetch(server, script, config)
-                await command_send(ctx, script["name"], files=end_file)
-                return
+    script = Bot_Func.get_script_by_name(server_command, config['scripts'])
+    if script is None:
+        await ctx.send(f"Script '{server_command}' Not Found")
+        return
 
-    await ctx.send(f"Command '{server_command}' Not Found")
+    await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
 print('Start Client')

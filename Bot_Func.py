@@ -28,6 +28,13 @@ def get_server_by_name(name, servers):
     return None
 
 
+def get_script_by_name(name, commands):
+    for command in commands:
+        if name == command['name']:
+            return command
+    return None
+
+
 def initialize_logger():
     logger = logging.getLogger('discord')
     logger.setLevel(logging.INFO)
