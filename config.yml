@@ -1,0 +1,16 @@
+---
+general:
+  botToken:
+  guildId:
+  listeningChannelId:
+  allowedRole:
+  fileDropClientFilePath:
+servers:
+- name:
+  username:
+  host:
+scripts:
+- name:
+  type:
+  command:
+...
