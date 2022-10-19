@@ -77,18 +77,9 @@ async def reso_help(ctx: interactions.CommandContext):
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
-    output = "-Help Info-\n" \
-             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+    help_message = Bot_Func.get_help_message(config)
 
-    output += "Servers:\n"
-    for server in config['servers']:
-        output += f"\t{server['name']}\n"
-
-    output += "\nScripts:\n"
-    for script in config['scripts']:
-        output += f"\t{script['name']}\n"
-
-    await ctx.send(output)
+    await ctx.send(help_message)
 
 
 print('Start Client')

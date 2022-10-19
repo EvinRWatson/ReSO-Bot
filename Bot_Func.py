@@ -37,3 +37,18 @@ def prevent_start_without_token(config):
     while str(config['general']['botToken']) == "":
         print("Bot Token Empty. Restart bot after configuration")
         time.sleep(60)
+
+
+def get_help_message(config):
+    output = "-Help Info-\n" \
+             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+
+    output += "Servers:\n"
+    for server in config['servers']:
+        output += f"\t{server['name']}\n"
+
+    output += "\nScripts:\n"
+    for script in config['scripts']:
+        output += f"\t{script['name']}\n"
+
+    return output
