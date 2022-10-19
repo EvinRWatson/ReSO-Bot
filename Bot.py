@@ -63,5 +63,15 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
+@bot.command(
+    name='reso_help',
+    description="Display help information",
+    dm_permission=False
+)
+async def reso_help(ctx: interactions.CommandContext):
+    output = "Command Format: /reso <server-name> <command-name> <parameters>"
+    await ctx.send("Help Info")
+
+
 print('Start Client')
 bot.start()
