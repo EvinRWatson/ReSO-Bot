@@ -36,7 +36,10 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     await ctx.send('Command Received')
 
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config, bot_parameters)
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    invalid_characters = ["&", ";"]
+    if any(character in bot_parameters for character in invalid_characters):
+        invalid_reasons += "Invalid Characters\n"
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
@@ -50,17 +53,42 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
             'There seems to be an error with your command format. If you need help please refer to the documentation')
         return
 
-    server = Bot_Func.get_server_by_name(server_name, config['servers'])
+    server = Bot_Func.get_object_by_name(server_name, config['servers'])
     if server is None:
         await ctx.send(f"Server '{server_name}' Not Found")
         return
 
-    script = Bot_Func.get_script_by_name(server_command, config['scripts'])
+    script = Bot_Func.get_object_by_name(server_command, config['scripts'])
     if script is None:
         await ctx.send(f"Script '{server_command}' Not Found")
         return
 
     await Server_Func.run(ctx, config, server, script, command_parameters)
+
+
+@bot.command(
+    name='reso_help',
+    description="Display help information",
+    dm_permission=False
+)
+async def reso_help(ctx: interactions.CommandContext):
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    if invalid_reasons != "":
+        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+        return
+
+    output = "-Help Info-\n" \
+             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+
+    output += "Servers:\n"
+    for server in config['servers']:
+        output += f"\t{server['name']}\n"
+
+    output += "\nScripts:\n"
+    for script in config['scripts']:
+        output += f"\t{script['name']}\n"
+
+    await ctx.send(output)
 
 
 print('Start Client')
