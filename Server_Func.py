@@ -2,6 +2,20 @@ import os
 import subprocess
 
 import interactions
+from interactions.ext.files import command_send
+
+
+async def run(ctx, config, server, script, command_parameters):
+    if script['type'] == 'command':
+        await ctx.send(f"Running {script['type']}: {script['name']}")
+        run_command(server, script, command_parameters)
+        await ctx.send('Complete')
+        return
+    if script['type'] == 'fetch':
+        await ctx.send(f"Running {script['type']}: {script['name']}")
+        end_file = run_fetch(server, script, config)
+        await command_send(ctx, script['name'], files=end_file)
+        return
 
 
 def run_command(server, command, params):
@@ -13,9 +27,9 @@ def run_command(server, command, params):
                    check=False)
 
 
-def run_fetch(server, file, config):
-    file_location = file['location']
-    file_destination = config['file_fetch']['fileDropClientFilePath']
+def run_fetch(server, script, config):
+    file_location = script['location']
+    file_destination = config['general']['fileDropClientFilePath']
 
     subprocess.run(["scp", f"{server['username']}@{server['host']}:{file_location}", file_destination])
 

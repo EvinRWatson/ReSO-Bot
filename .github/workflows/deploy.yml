@@ -11,19 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Docker Login
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      
-    - name: Build the Docker images
-      run: |
-        docker build --platform amd64 --tag evinrwatson/reso-bot:latest_amd64 .
-        docker build --platform arm --tag evinrwatson/reso-bot:latest_arm .
-        docker build --platform arm64 --tag evinrwatson/reso-bot:latest_arm64 .
-        
-    - name: Deploy to Docker Hub
-      run: |
-        docker push evinrwatson/reso-bot:latest_amd64
-        docker push evinrwatson/reso-bot:latest_arm
-        docker push evinrwatson/reso-bot:latest_arm64
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: evinrwatson/reso-bot:latest

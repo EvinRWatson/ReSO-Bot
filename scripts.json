@@ -1,8 +1,0 @@
-{
-  "scripts" : [
-    {
-      "name": "example",
-      "command": "sh /temp/example.sh"
-    }
-  ]
-}

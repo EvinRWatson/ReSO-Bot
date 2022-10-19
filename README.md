@@ -1,12 +1,12 @@
 # Remote Server Operation Bot (ReSO-Bot)
 
-Highly configurable client bot designed to be used by Discord server admins to allow them to interface with a server utilizing the SSH protocol.
+Highly configurable client bot designed for Discord server admins, allowing them to interface with any server utilizing the SSH protocol.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/EvinRWatson/ReSO-Bot/master/ReSO_Bot_Logo.png" width="300" height="300"/>
 </p>
 
-Recommended use case for this bot it between your discord server and another server that resides within your home network, such as a home gaming or automation server.
+Recommended setup for this application is containerized on a centralized server, acting as a layer between your Discord and another server that resides within your network, such as a gaming or automation server.
 
 ### Functionality:
 - Call pre-configured commands and scripts
@@ -34,14 +34,14 @@ Recommended use case for this bot it between your discord server and another ser
 
 After completing installation, using the bot requires using the '/reso' command, passing in these parameters in the following order:
 
-- server-name (as outlined in servers.json)
-- command-name (as outlined in scripts.json)
+- server-name
+- command-name
 - parameters (if applicable to the command)
 
 Command Format:
 
     /reso <server-name> <command-name> <parameters>
 
-Note: Everything after '/reso' must be enclosed in the 'input' box as shown in the input box
+Note: Everything after '/reso' must be enclosed in the 'bot_parameters' field as shown in the input box
 
 #### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)

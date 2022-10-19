@@ -1,7 +1,6 @@
-import json
+import yaml
 
 import interactions
-from interactions.ext.files import command_send
 
 import Bot_Func
 import Server_Func
@@ -11,20 +10,14 @@ print('\tLogger')
 logger = Bot_Func.initialize_logger()
 
 print('\tConfig')
-config = json.load(open('config.json'))
+config = yaml.safe_load(open('config.yml'))
 
-print('\tServers')
-servers = json.load(open('servers.json'))
-
-print('\tScripts')
-scripts = json.load(open('scripts.json'))
-
-print('Finished Loading')
+print('Checking for token')
 Bot_Func.prevent_start_without_token(config)
 
 print('Initialize Client')
 bot = interactions.Client(token=config['general']['botToken'],
-                          default_scope=config['general']['guildId'])
+                          default_scope=str(config['general']['guildId']))
 
 
 @bot.command(
@@ -41,7 +34,12 @@ bot = interactions.Client(token=config['general']['botToken'],
     dm_permission=False
 )
 async def reso(ctx: interactions.CommandContext, bot_parameters: str):
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config, bot_parameters)
+    await ctx.send('Command Received')
+
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    invalid_characters = ["&", ";"]
+    if any(character in bot_parameters for character in invalid_characters):
+        invalid_reasons += "Invalid Characters\n"
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
@@ -55,25 +53,42 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
             'There seems to be an error with your command format. If you need help please refer to the documentation')
         return
 
-    server = Bot_Func.get_server_by_name(server_name, servers)
+    server = Bot_Func.get_object_by_name(server_name, config['servers'])
     if server is None:
         await ctx.send(f"Server '{server_name}' Not Found")
         return
 
-    for script in scripts['scripts']:
-        if script["name"] == server_command:
-            if script['type'] == 'command':
-                await ctx.send(f"Running {script['type']}: {script['name']}")
-                Server_Func.run_command(server, script, command_parameters)
-                await ctx.send('Complete')
-                return
-            if script['type'] == 'fetch':
-                await ctx.send(f"Running {script['type']}: {script['name']}")
-                end_file = Server_Func.run_fetch(server, script, config)
-                await command_send(ctx, script["name"], files=end_file)
-                return
+    script = Bot_Func.get_object_by_name(server_command, config['scripts'])
+    if script is None:
+        await ctx.send(f"Script '{server_command}' Not Found")
+        return
 
-    await ctx.send(f"Command '{server_command}' Not Found")
+    await Server_Func.run(ctx, config, server, script, command_parameters)
+
+
+@bot.command(
+    name='reso_help',
+    description="Display help information",
+    dm_permission=False
+)
+async def reso_help(ctx: interactions.CommandContext):
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    if invalid_reasons != "":
+        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+        return
+
+    output = "-Help Info-\n" \
+             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+
+    output += "Servers:\n"
+    for server in config['servers']:
+        output += f"\t{server['name']}\n"
+
+    output += "\nScripts:\n"
+    for script in config['scripts']:
+        output += f"\t{script['name']}\n"
+
+    await ctx.send(output)
 
 
 print('Start Client')

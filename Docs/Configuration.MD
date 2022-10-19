@@ -1,9 +1,6 @@
-# Configuration options (config.json):
+# Configuration options (config.yml):
 
-It is recommended to configure the files in the following order:
-1. config.json
-2. servers.json
-3. scripts.json
+It is recommended to set up the configuration from top to bottom.
 
 ## General:
 
@@ -22,8 +19,6 @@ When setting up the bot, ensure to add the 'bot' scope and within that you will 
 The ID for the server the bot will be running on. You can get this by right-clicking on the server
 name on the top-left side of the discord window and clicking 'Copy ID' at the bottom.
 
-## Permissions:
-
 ### listeningChannelId:
 The ID of the channel you want the bot to listen for commands in. You can get the channel ID
 by first enabling developer mode in your discord User Settings, and then right-clicking on the
@@ -35,36 +30,28 @@ The role that you assign to others to allow them to operate the bot. Examples in
 Moderator, BotOperator, etc. This setting in conjunction with properly configuring the listening
 channel will ensure that no one who isn't explicitly allowed can operate the bot.
 
-## File Fetch:
-
-
 ### fileDropClientFilePath:
 The temporary location of the fetched file in the bot client's operating system. This location
-is arbitrary, but make sure that the bot has permissions to access that directory. Examples:
+is arbitrary, but make sure that the bot has permissions to access that directory. When using Docker,
+the recommended location is '/tmp'.
 
-~~~
-/home/bob/fetch
-C:/Users/Bob/fetch
-/home/bob/temp
-~~~
-
-# Target Servers (servers.json)
+# Servers
 
 ### name:
 The name you assign the server, this determines which location the desired command gets send to when using the bot
-
-### host:
-The host or IP of the server you are connecting to through the bot. This can be an IP address
-or a host name if specified in your hosts file, or DNS.
 
 ### username:
 The username of the intended user on the server. It is not advised to use the root user, instead
 set up a user specifically for the bot and assign permissions accordingly to prevent malicious actors
 from doing some real damage to your server.
 
-# Scripts (scripts.json)
+### host:
+The host or IP of the server you are connecting to through the bot. This can be an IP address
+or a host name if specified in your hosts file, or DNS.
 
-## Parameters
+
+
+# Scripts
 
 ### name
 Name of the bot command you want to use to trigger the command below. Spaces are not allowed
@@ -91,26 +78,4 @@ Location of the file you want to fetch, associated with this command.
 
 Example:
 
-    /home/bob//App/logs/latest.log
-
-## File Structure
-The file follows basic JSON formatting. To add a command, simply add a comma after the closing
-'}' bracket of the previous command and copy the formatting to declare a new command.
-
-Example File:
-
-~~~
-{
-  "scripts" : [
-    {
-      "name": "restart",
-      "type": "command",
-      "command": "sh /home/bob/App/restart.sh"
-    },
-    {
-      "name": "get_log",
-      "type": "fetch",
-      "location": "/home/bob/App/logs/latest.log"
-    }
-}
-~~~
+    /home/bob/App/logs/latest.log

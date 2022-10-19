@@ -18,7 +18,7 @@ Architectures include:
 Once the image is running you can access the shell to complete installation
 
 ## Edit Configurations
-You can setup the bot as outlined in the [Configuration Guide](Configuration.MD) by using the packaged
+You can set up the bot as outlined in the [Configuration Guide](Configuration.MD) by using the packaged
 text editors (vim/nano) to edit the config files.
 
 ## Establish SSH Connections
