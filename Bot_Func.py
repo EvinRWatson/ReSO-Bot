@@ -4,7 +4,7 @@ import time
 import discord
 
 
-def check_invalid_user(ctx, config, params):
+def check_invalid_user(ctx, config):
     invalid_reasons = ""
 
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']):
@@ -14,9 +14,6 @@ def check_invalid_user(ctx, config, params):
     if int(role.id) not in ctx.author.roles:
         invalid_reasons += "Invalid Role\n"
 
-    invalid_characters = ["&", ";"]
-    if any(character in params for character in invalid_characters):
-        invalid_reasons += "Invalid Characters\n"
 
     return invalid_reasons
 

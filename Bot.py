@@ -36,7 +36,10 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     await ctx.send('Command Received')
 
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config, bot_parameters)
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    invalid_characters = ["&", ";"]
+    if any(character in bot_parameters for character in invalid_characters):
+        invalid_reasons += "Invalid Characters\n"
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
