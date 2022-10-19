@@ -72,8 +72,23 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     dm_permission=False
 )
 async def reso_help(ctx: interactions.CommandContext):
-    output = "Command Format: /reso <server-name> <command-name> <parameters>"
-    await ctx.send("Help Info")
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    if invalid_reasons != "":
+        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+        return
+
+    output = "-Help Info-\n" \
+             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+
+    output += "Servers:\n"
+    for server in config['servers']:
+        output += f"\t{server['name']}\n"
+
+    output += "\nScripts:\n"
+    for script in config['scripts']:
+        output += f"\t{script['name']}\n"
+
+    await ctx.send(output)
 
 
 print('Start Client')

@@ -14,7 +14,6 @@ def check_invalid_user(ctx, config):
     if int(role.id) not in ctx.author.roles:
         invalid_reasons += "Invalid Role\n"
 
-
     return invalid_reasons
 
 
