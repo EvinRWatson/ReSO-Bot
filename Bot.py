@@ -50,12 +50,12 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
             'There seems to be an error with your command format. If you need help please refer to the documentation')
         return
 
-    server = Bot_Func.get_server_by_name(server_name, config['servers'])
+    server = Bot_Func.get_object_by_name(server_name, config['servers'])
     if server is None:
         await ctx.send(f"Server '{server_name}' Not Found")
         return
 
-    script = Bot_Func.get_script_by_name(server_command, config['scripts'])
+    script = Bot_Func.get_object_by_name(server_command, config['scripts'])
     if script is None:
         await ctx.send(f"Script '{server_command}' Not Found")
         return

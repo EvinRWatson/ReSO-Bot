@@ -21,17 +21,10 @@ def check_invalid_user(ctx, config, params):
     return invalid_reasons
 
 
-def get_server_by_name(name, servers):
-    for server in servers:
-        if name == server['name']:
-            return server
-    return None
-
-
-def get_script_by_name(name, commands):
-    for command in commands:
-        if name == command['name']:
-            return command
+def get_object_by_name(name, objects):
+    for obj in objects:
+        if name == obj['name']:
+            return obj
     return None
 
 
