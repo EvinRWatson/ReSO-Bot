@@ -41,7 +41,9 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     if any(character in bot_parameters for character in invalid_characters):
         invalid_reasons += "Invalid Characters\n"
     if invalid_reasons != "":
-        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+        message = f"Cannot execute command:\n{invalid_reasons}"
+        Bot_Func.log_action(message, logger, ctx)
+        await ctx.send(message)
         return
 
     try:
@@ -49,20 +51,27 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
         server_command = bot_parameters.split(" ")[1]
         command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
     except IndexError:
-        await ctx.send(
-            'There seems to be an error with your command format. If you need help please refer to the documentation')
+        message = 'There seems to be an error with your command format. Please use /reso_help for assistance'
+        Bot_Func.log_action(message, logger, ctx)
+        await ctx.send(message)
         return
 
     server = Bot_Func.get_object_by_name(server_name, config['servers'])
     if server is None:
-        await ctx.send(f"Server '{server_name}' Not Found")
+        message = f"Server '{server_name}' Not Found"
+        Bot_Func.log_action(message, logger, ctx)
+        await ctx.send(message)
         return
 
     script = Bot_Func.get_object_by_name(server_command, config['scripts'])
     if script is None:
-        await ctx.send(f"Script '{server_command}' Not Found")
+        message = f"Script '{server_command}' Not Found"
+        Bot_Func.log_action(message, logger, ctx)
+        await ctx.send(message)
         return
 
+    log_message = f"Running {script['name']} on {server_name} with the following parameters: {command_parameters}"
+    Bot_Func.log_action(log_message, logger, ctx)
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
@@ -76,6 +85,9 @@ async def reso_help(ctx: interactions.CommandContext):
     if invalid_reasons != "":
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
+
+    log_message = 'Used reso_help'
+    Bot_Func.log_action(log_message, logger, ctx)
 
     help_message = Bot_Func.get_help_message(config)
 
@@ -101,12 +113,15 @@ async def reso_help(ctx: interactions.CommandContext, server_name: str):
         await ctx.send('Cannot execute command:\n' + invalid_reasons)
         return
 
-    await ctx.send(f'Pinging server: {server_name}')
+    message = f'Pinging server: {server_name}'
+    Bot_Func.log_action(message, logger, ctx)
+    await ctx.send(message)
+
     if Server_Func.is_server_up(server_name, config):
         await ctx.send(f'{server_name} server is up!')
     else:
         await ctx.send(f'{server_name} server is down!')
 
 
-print('Start Client')
+Bot_Func.log_action('Start RESO Client', logger)
 bot.start()
