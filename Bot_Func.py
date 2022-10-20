@@ -5,24 +5,49 @@ import discord
 import interactions
 
 
+async def respond_and_log(ctx, message: str):
+    log_action(message, ctx)
+    await ctx.send(message)
+
+
 def check_invalid_user(ctx, config):
-    invalid_reasons = ""
-
-    if not str(ctx.channel.id) == str(config['general']['listeningChannelId']):
-        invalid_reasons += "Invalid Channel\n"
-
     role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
-    if int(role.id) not in ctx.author.roles:
-        invalid_reasons += "Invalid Role\n"
+    if not str(ctx.channel.id) == str(config['general']['listeningChannelId']) or int(role.id) not in ctx.author.roles:
+        raise PermissionError("Invalid User")
 
-    return invalid_reasons
+
+def prevent_command_chaining(input: str):
+    invalid_characters = ["&", ";"]
+    if any(character in input for character in invalid_characters):
+        raise PermissionError("Invalid Characters")
+
+
+def prevent_start_without_token(config):
+    while str(config['general']['botToken']) == "":
+        print("Bot Token Empty. Restart bot after configuration")
+        time.sleep(60)
 
 
 def get_object_by_name(name, objects):
     for obj in objects:
         if name == obj['name']:
             return obj
-    return None
+
+    raise KeyError(f"{name} Not Found")
+
+
+def get_help_message(config):
+    output = ""
+
+    output += "Servers:\n"
+    for server in config['servers']:
+        output += f"\t{server['name']}\n"
+
+    output += "\nCommands:\n"
+    for script in config['scripts']:
+        output += f"\t{script['name']}\n"
+
+    return output
 
 
 def initialize_logger():
@@ -34,28 +59,8 @@ def initialize_logger():
     return logger
 
 
-def prevent_start_without_token(config):
-    while str(config['general']['botToken']) == "":
-        print("Bot Token Empty. Restart bot after configuration")
-        time.sleep(60)
-
-
-def get_help_message(config):
-    output = "-Help Info-\n" \
-             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
-
-    output += "Servers:\n"
-    for server in config['servers']:
-        output += f"\t{server['name']}\n"
-
-    output += "\nScripts:\n"
-    for script in config['scripts']:
-        output += f"\t{script['name']}\n"
-
-    return output
-
-
-def log_action(message: str, logger: logging.Logger, ctx: interactions.CommandContext = None):
+def log_action(message: str, ctx: interactions.CommandContext = None):
+    logger = initialize_logger()
     if ctx is not None:
         logger.info(f"User: {ctx.user.username} | Channel: {ctx.channel.name} > {message}")
     else:
