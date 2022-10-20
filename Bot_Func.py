@@ -5,6 +5,11 @@ import discord
 import interactions
 
 
+async def respond_and_log(ctx, message: str):
+    log_action(message, ctx)
+    await ctx.send(message)
+
+
 def check_invalid_user(ctx, config):
     role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']) or int(role.id) not in ctx.author.roles:

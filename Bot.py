@@ -85,8 +85,7 @@ async def reso(ctx: interactions.CommandContext, sub_command: str, server_name: 
         exception_message = "Unexpected Error"
 
     if exception_message is not None:
-        Bot_Func.log_action(exception_message, ctx)
-        await ctx.send(exception_message)
+        await Bot_Func.respond_and_log(ctx, exception_message)
         return
 
 
@@ -97,7 +96,7 @@ async def reso_run(ctx: interactions.CommandContext, server_name: str, command_n
     script = Bot_Func.get_object_by_name(command_name, config['scripts'])
 
     log_message = f"Running {script['name']} on {server_name} with the parameters: {command_parameters}"
-    Bot_Func.log_action(log_message, ctx)
+    await Bot_Func.respond_and_log(ctx, log_message)
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
@@ -114,8 +113,7 @@ async def reso_ping(ctx: interactions.CommandContext, server_name: str):
     Bot_Func.check_invalid_user(ctx, config)
 
     message = f'Pinging server: {server_name}'
-    Bot_Func.log_action(message, ctx)
-    await ctx.send(message)
+    await Bot_Func.respond_and_log(ctx, message)
 
     if Server_Func.is_server_up(server_name, config):
         await ctx.send(f'{server_name} server is up!')
