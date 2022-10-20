@@ -68,60 +68,50 @@ bot = interactions.Client(token=config['general']['botToken'],
 )
 async def reso(ctx: interactions.CommandContext, sub_command: str, server_name: str = "", command_name: str = "", command_parameters: str = ""):
     await ctx.send('Command Received')
-    if sub_command == 'run':
-        await reso_run(ctx, server_name, command_name, command_parameters)
-    if sub_command == 'help':
-        await reso_help(ctx)
-    if sub_command == 'ping':
-        await reso_ping(ctx, server_name)
-
-
-async def reso_run(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
-    exception_message: str = None
+    exception_message = None
 
     try:
-        Bot_Func.check_invalid_user(ctx, config)
-        Bot_Func.prevent_command_chaining(command_parameters)
-        server = Bot_Func.get_object_by_name(server_name, config['servers'])
-        script = Bot_Func.get_object_by_name(command_name, config['scripts'])
+        if sub_command == 'run':
+            await reso_run(ctx, server_name, command_name, command_parameters)
+        if sub_command == 'help':
+            await reso_help(ctx)
+        if sub_command == 'ping':
+            await reso_ping(ctx, server_name)
     except PermissionError as pe:
         exception_message = str(pe)
     except KeyError as ke:
         exception_message = str(ke)
+    except Exception as e:
+        exception_message = "Unexpected Error"
 
     if exception_message is not None:
         Bot_Func.log_action(exception_message, ctx)
         await ctx.send(exception_message)
         return
 
-    log_message = f"Running {script['name']} on {server_name} with the following parameters: {command_parameters}"
+
+async def reso_run(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
+    Bot_Func.check_invalid_user(ctx, config)
+    Bot_Func.prevent_command_chaining(command_parameters)
+    server = Bot_Func.get_object_by_name(server_name, config['servers'])
+    script = Bot_Func.get_object_by_name(command_name, config['scripts'])
+
+    log_message = f"Running {script['name']} on {server_name} with the parameters: {command_parameters}"
     Bot_Func.log_action(log_message, ctx)
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
 async def reso_help(ctx: interactions.CommandContext):
-    try:
-        Bot_Func.check_invalid_user(ctx, config)
-    except PermissionError as pe:
-        Bot_Func.log_action(pe, ctx)
-        await ctx.send(pe)
-        return
+    Bot_Func.check_invalid_user(ctx, config)
 
     log_message = 'Used reso_help'
     Bot_Func.log_action(log_message, ctx)
 
-    help_message = Bot_Func.get_help_message(config)
-
-    await ctx.send(help_message)
+    await ctx.send(Bot_Func.get_help_message(config))
 
 
 async def reso_ping(ctx: interactions.CommandContext, server_name: str):
-    try:
-        Bot_Func.check_invalid_user(ctx, config)
-    except PermissionError as pe:
-        Bot_Func.log_action(pe, ctx)
-        await ctx.send(pe)
-        return
+    Bot_Func.check_invalid_user(ctx, config)
 
     message = f'Pinging server: {server_name}'
     Bot_Func.log_action(message, ctx)
