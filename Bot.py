@@ -56,7 +56,7 @@ async def reso(ctx: interactions.CommandContext, server_name: str, command_name:
         server = Bot_Func.get_object_by_name(server_name, config['servers'])
         script = Bot_Func.get_object_by_name(command_name, config['scripts'])
     except PermissionError as pe:
-        exception_message = f"Cannot execute command:\n{str(pe)}"
+        exception_message = str(pe)
     except KeyError as ke:
         exception_message = str(ke)
 
@@ -79,9 +79,8 @@ async def reso_help(ctx: interactions.CommandContext):
     try:
         Bot_Func.check_invalid_user(ctx, config)
     except PermissionError as pe:
-        exception_message = f"Cannot execute command:\n{pe}"
-        Bot_Func.log_action(exception_message, logger, ctx)
-        await ctx.send(exception_message)
+        Bot_Func.log_action(pe, logger, ctx)
+        await ctx.send(pe)
         return
 
     log_message = 'Used reso_help'
@@ -109,9 +108,8 @@ async def reso_help(ctx: interactions.CommandContext, server_name: str):
     try:
         Bot_Func.check_invalid_user(ctx, config)
     except PermissionError as pe:
-        exception_message = f"Cannot execute command:\n{pe}"
-        Bot_Func.log_action(exception_message, logger, ctx)
-        await ctx.send(exception_message)
+        Bot_Func.log_action(pe, logger, ctx)
+        await ctx.send(pe)
         return
 
     message = f'Pinging server: {server_name}'

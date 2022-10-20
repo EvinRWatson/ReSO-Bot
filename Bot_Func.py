@@ -6,12 +6,9 @@ import interactions
 
 
 def check_invalid_user(ctx, config):
-    if not str(ctx.channel.id) == str(config['general']['listeningChannelId']):
-        raise PermissionError("Invalid Channel")
-
     role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
-    if int(role.id) not in ctx.author.roles:
-        raise PermissionError("Invalid Role")
+    if not str(ctx.channel.id) == str(config['general']['listeningChannelId']) or int(role.id) not in ctx.author.roles:
+        raise PermissionError("Invalid User")
 
 
 def prevent_command_chaining(input: str):
