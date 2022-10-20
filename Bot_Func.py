@@ -6,8 +6,6 @@ import interactions
 
 
 def check_invalid_user(ctx, config):
-    invalid_reasons = ""
-
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']):
         raise PermissionError("Invalid Channel")
 
@@ -15,18 +13,20 @@ def check_invalid_user(ctx, config):
     if int(role.id) not in ctx.author.roles:
         raise PermissionError("Invalid Role")
 
-    return invalid_reasons
 
 def prevent_command_chaining(input: str):
     invalid_characters = ["&", ";"]
     if any(character in input for character in invalid_characters):
         raise PermissionError("Invalid Characters")
 
+
 def get_object_by_name(name, objects):
     for obj in objects:
         if name == obj['name']:
             return obj
-    return None
+
+    if obj is None:
+        raise KeyError(f"{name} Not Found")
 
 
 def initialize_logger():

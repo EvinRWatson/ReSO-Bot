@@ -25,50 +25,46 @@ bot = interactions.Client(token=config['general']['botToken'],
     description="Command to trigger ReSO Bot interpretation",
     options=[
         interactions.Option(
-            name="bot_parameters",
-            description="Parameters",
+            name="server_name",
+            description="Server Name",
             type=interactions.OptionType.STRING,
             required=True
+        ),
+        interactions.Option(
+            name="server_command",
+            description="Server Command",
+            type=interactions.OptionType.STRING,
+            required=True
+        ),
+        interactions.Option(
+            name="command_parameters",
+            description="Optional Parameters",
+            type=interactions.OptionType.STRING,
+            required=False
         )
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, bot_parameters: str):
+async def reso(ctx: interactions.CommandContext, server_name: str, server_command: str, command_parameters: str = ""):
     await ctx.send('Command Received')
 
-    server_name: str= None
-    server_command: str = None
-    command_parameters: str = None
     exception_message: str = None
 
     try:
         Bot_Func.check_invalid_user(ctx, config)
-        Bot_Func.prevent_command_chaining(bot_parameters)
-
-        server_name = bot_parameters.split(" ")[0]
-        server_command = bot_parameters.split(" ")[1]
-        command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
-    except IndexError as e:
+        Bot_Func.prevent_command_chaining(command_parameters)
+        server = Bot_Func.get_object_by_name(server_name, config['servers'])
+        script = Bot_Func.get_object_by_name(server_command, config['scripts'])
+    except IndexError as ie:
         exception_message = 'There seems to be an error with your command format. Please use /reso_help for assistance'
-    except PermissionError as e:
-        exception_message = f"Cannot execute command:\n{e}"
+    except PermissionError as pe:
+        exception_message = f"Cannot execute command:\n{pe}"
+    except KeyError as ke:
+        exception_message = ke
 
     if exception_message is not None:
         Bot_Func.log_action(exception_message, logger, ctx)
         await ctx.send(exception_message)
-
-    server = Bot_Func.get_object_by_name(server_name, config['servers'])
-    if server is None:
-        message = f"Server '{server_name}' Not Found"
-        Bot_Func.log_action(message, logger, ctx)
-        await ctx.send(message)
-        return
-
-    script = Bot_Func.get_object_by_name(server_command, config['scripts'])
-    if script is None:
-        message = f"Script '{server_command}' Not Found"
-        Bot_Func.log_action(message, logger, ctx)
-        await ctx.send(message)
         return
 
     log_message = f"Running {script['name']} on {server_name} with the following parameters: {command_parameters}"
@@ -82,9 +78,12 @@ async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     dm_permission=False
 )
 async def reso_help(ctx: interactions.CommandContext):
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
-    if invalid_reasons != "":
-        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+    try:
+        Bot_Func.check_invalid_user(ctx, config)
+    except PermissionError as pe:
+        exception_message = f"Cannot execute command:\n{pe}"
+        Bot_Func.log_action(exception_message, logger, ctx)
+        await ctx.send(exception_message)
         return
 
     log_message = 'Used reso_help'
@@ -109,9 +108,12 @@ async def reso_help(ctx: interactions.CommandContext):
     dm_permission=False
 )
 async def reso_help(ctx: interactions.CommandContext, server_name: str):
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
-    if invalid_reasons != "":
-        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+    try:
+        Bot_Func.check_invalid_user(ctx, config)
+    except PermissionError as pe:
+        exception_message = f"Cannot execute command:\n{pe}"
+        Bot_Func.log_action(exception_message, logger, ctx)
+        await ctx.send(exception_message)
         return
 
     message = f'Pinging server: {server_name}'
