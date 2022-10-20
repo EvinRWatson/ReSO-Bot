@@ -2,6 +2,7 @@ import logging
 import time
 
 import discord
+import interactions
 
 
 def check_invalid_user(ctx, config):
@@ -52,3 +53,10 @@ def get_help_message(config):
         output += f"\t{script['name']}\n"
 
     return output
+
+
+def log_action(message: str, logger: logging.Logger, ctx: interactions.CommandContext = None):
+    if ctx is not None:
+        logger.info(f"User: {ctx.user.username} | Channel: {ctx.channel.name} > {message}")
+    else:
+        logger.info(message)
