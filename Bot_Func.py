@@ -41,14 +41,13 @@ def prevent_start_without_token(config):
 
 
 def get_help_message(config):
-    output = "-Help Info-\n" \
-             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+    output = ""
 
     output += "Servers:\n"
     for server in config['servers']:
         output += f"\t{server['name']}\n"
 
-    output += "\nScripts:\n"
+    output += "\nCommands:\n"
     for script in config['scripts']:
         output += f"\t{script['name']}\n"
 

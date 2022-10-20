@@ -22,32 +22,65 @@ bot = interactions.Client(token=config['general']['botToken'],
 
 @bot.command(
     name='reso',
-    description="Command to trigger ReSO Bot interpretation",
+    description="Remote Server Operation Bot",
     options=[
         interactions.Option(
-            name="server_name",
-            description="Server Name",
-            type=interactions.OptionType.STRING,
-            required=True
+            name="run",
+            description="Run Command",
+            type=interactions.OptionType.SUB_COMMAND,
+            options=[
+                interactions.Option(
+                    name="server_name",
+                    description="Server Name",
+                    type=interactions.OptionType.STRING,
+                    required=True
+                ),
+                interactions.Option(
+                    name="command_name",
+                    description="Server Command",
+                    type=interactions.OptionType.STRING,
+                    required=True
+                ),
+                interactions.Option(
+                    name="command_parameters",
+                    description="Optional Parameters",
+                    type=interactions.OptionType.STRING,
+                    required=False
+                )
+            ],
         ),
         interactions.Option(
-            name="command_name",
-            description="Server Command",
-            type=interactions.OptionType.STRING,
-            required=True
+            name="help",
+            description="Displays help information",
+            type=interactions.OptionType.SUB_COMMAND,
         ),
         interactions.Option(
-            name="command_parameters",
-            description="Optional Parameters",
-            type=interactions.OptionType.STRING,
-            required=False
+            name="ping",
+            description="Determines whether a server is reachable or not",
+            type=interactions.OptionType.SUB_COMMAND,
+            options=[
+                interactions.Option(
+                    name="server_name",
+                    description="Name of server to ping",
+                    type=interactions.OptionType.STRING,
+                    required=True
+                )
+            ],
         )
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
+async def reso(ctx: interactions.CommandContext, sub_command: str, server_name: str = "", command_name: str = "", command_parameters: str = ""):
     await ctx.send('Command Received')
+    if sub_command == 'run':
+        await reso_run(ctx, server_name, command_name, command_parameters)
+    if sub_command == 'help':
+        await reso_help(ctx)
+    if sub_command == 'ping':
+        await reso_ping(ctx, server_name)
 
+
+async def reso_run(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
     exception_message: str = None
 
     try:
@@ -70,11 +103,6 @@ async def reso(ctx: interactions.CommandContext, server_name: str, command_name:
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
-@bot.command(
-    name='reso_help',
-    description="Display help information",
-    dm_permission=False
-)
 async def reso_help(ctx: interactions.CommandContext):
     try:
         Bot_Func.check_invalid_user(ctx, config)
@@ -91,20 +119,7 @@ async def reso_help(ctx: interactions.CommandContext):
     await ctx.send(help_message)
 
 
-@bot.command(
-    name='reso_ping',
-    description="Ping server",
-    options=[
-        interactions.Option(
-            name="server_name",
-            description="Name of server to ping",
-            type=interactions.OptionType.STRING,
-            required=True
-        )
-    ],
-    dm_permission=False
-)
-async def reso_help(ctx: interactions.CommandContext, server_name: str):
+async def reso_ping(ctx: interactions.CommandContext, server_name: str):
     try:
         Bot_Func.check_invalid_user(ctx, config)
     except PermissionError as pe:
