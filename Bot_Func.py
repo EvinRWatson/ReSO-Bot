@@ -25,8 +25,7 @@ def get_object_by_name(name, objects):
         if name == obj['name']:
             return obj
 
-    if obj is None:
-        raise KeyError(f"{name} Not Found")
+    raise KeyError(f'{name} Not Found')
 
 
 def initialize_logger():

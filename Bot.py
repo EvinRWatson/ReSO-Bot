@@ -31,7 +31,7 @@ bot = interactions.Client(token=config['general']['botToken'],
             required=True
         ),
         interactions.Option(
-            name="server_command",
+            name="command_name",
             description="Server Command",
             type=interactions.OptionType.STRING,
             required=True
@@ -45,7 +45,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, server_name: str, server_command: str, command_parameters: str = ""):
+async def reso(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
     await ctx.send('Command Received')
 
     exception_message: str = None
@@ -54,13 +54,11 @@ async def reso(ctx: interactions.CommandContext, server_name: str, server_comman
         Bot_Func.check_invalid_user(ctx, config)
         Bot_Func.prevent_command_chaining(command_parameters)
         server = Bot_Func.get_object_by_name(server_name, config['servers'])
-        script = Bot_Func.get_object_by_name(server_command, config['scripts'])
-    except IndexError as ie:
-        exception_message = 'There seems to be an error with your command format. Please use /reso_help for assistance'
+        script = Bot_Func.get_object_by_name(command_name, config['scripts'])
     except PermissionError as pe:
-        exception_message = f"Cannot execute command:\n{pe}"
+        exception_message = f"Cannot execute command:\n{str(pe)}"
     except KeyError as ke:
-        exception_message = ke
+        exception_message = str(ke)
 
     if exception_message is not None:
         Bot_Func.log_action(exception_message, logger, ctx)
