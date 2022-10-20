@@ -5,11 +5,7 @@ import interactions
 import Bot_Func
 import Server_Func
 
-print('Loading:')
-print('\tLogger')
-logger = Bot_Func.initialize_logger()
-
-print('\tConfig')
+print('Loading Config')
 config = yaml.safe_load(open('config.yml'))
 
 print('Checking for token')
@@ -94,12 +90,12 @@ async def reso_run(ctx: interactions.CommandContext, server_name: str, command_n
         exception_message = str(ke)
 
     if exception_message is not None:
-        Bot_Func.log_action(exception_message, logger, ctx)
+        Bot_Func.log_action(exception_message, ctx)
         await ctx.send(exception_message)
         return
 
     log_message = f"Running {script['name']} on {server_name} with the following parameters: {command_parameters}"
-    Bot_Func.log_action(log_message, logger, ctx)
+    Bot_Func.log_action(log_message, ctx)
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
@@ -107,12 +103,12 @@ async def reso_help(ctx: interactions.CommandContext):
     try:
         Bot_Func.check_invalid_user(ctx, config)
     except PermissionError as pe:
-        Bot_Func.log_action(pe, logger, ctx)
+        Bot_Func.log_action(pe, ctx)
         await ctx.send(pe)
         return
 
     log_message = 'Used reso_help'
-    Bot_Func.log_action(log_message, logger, ctx)
+    Bot_Func.log_action(log_message, ctx)
 
     help_message = Bot_Func.get_help_message(config)
 
@@ -123,12 +119,12 @@ async def reso_ping(ctx: interactions.CommandContext, server_name: str):
     try:
         Bot_Func.check_invalid_user(ctx, config)
     except PermissionError as pe:
-        Bot_Func.log_action(pe, logger, ctx)
+        Bot_Func.log_action(pe, ctx)
         await ctx.send(pe)
         return
 
     message = f'Pinging server: {server_name}'
-    Bot_Func.log_action(message, logger, ctx)
+    Bot_Func.log_action(message, ctx)
     await ctx.send(message)
 
     if Server_Func.is_server_up(server_name, config):
@@ -137,5 +133,5 @@ async def reso_ping(ctx: interactions.CommandContext, server_name: str):
         await ctx.send(f'{server_name} server is down!')
 
 
-Bot_Func.log_action('Start RESO Client', logger)
+Bot_Func.log_action('Start RESO Client')
 bot.start()

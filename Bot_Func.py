@@ -54,7 +54,8 @@ def initialize_logger():
     return logger
 
 
-def log_action(message: str, logger: logging.Logger, ctx: interactions.CommandContext = None):
+def log_action(message: str, ctx: interactions.CommandContext = None):
+    logger = initialize_logger()
     if ctx is not None:
         logger.info(f"User: {ctx.user.username} | Channel: {ctx.channel.name} > {message}")
     else:
