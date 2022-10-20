@@ -82,5 +82,31 @@ async def reso_help(ctx: interactions.CommandContext):
     await ctx.send(help_message)
 
 
+@bot.command(
+    name='reso_ping',
+    description="Ping server",
+    options=[
+        interactions.Option(
+            name="server_name",
+            description="Name of server to ping",
+            type=interactions.OptionType.STRING,
+            required=True
+        )
+    ],
+    dm_permission=False
+)
+async def reso_help(ctx: interactions.CommandContext, server_name: str):
+    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
+    if invalid_reasons != "":
+        await ctx.send('Cannot execute command:\n' + invalid_reasons)
+        return
+
+    await ctx.send(f'Pinging server: {server_name}')
+    if Server_Func.is_server_up(server_name, config):
+        await ctx.send(f'{server_name} server is up!')
+    else:
+        await ctx.send(f'{server_name} server is down!')
+
+
 print('Start Client')
 bot.start()

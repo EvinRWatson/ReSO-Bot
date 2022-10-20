@@ -4,6 +4,8 @@ import subprocess
 import interactions
 from interactions.ext.files import command_send
 
+import Bot_Func
+
 
 async def run(ctx, config, server, script, command_parameters):
     if script['type'] == 'command':
@@ -38,3 +40,12 @@ def run_fetch(server, script, config):
 
     end_file = interactions.File(file_path)
     return end_file
+
+
+def is_server_up(server_name: str, config):
+    server = Bot_Func.get_object_by_name(server_name, config['servers'])
+
+    response = os.system("ping -c 1 " + server['host'])
+
+    return response == 0
+
