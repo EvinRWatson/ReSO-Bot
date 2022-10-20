@@ -11,7 +11,7 @@ async def run(ctx, config, server, script, command_parameters):
     if script['type'] == 'command':
         await ctx.send(f"Running {script['type']}: {script['name']}")
         run_command(server, script, command_parameters)
-        await ctx.send('Complete')
+        await ctx.send("Complete")
         return
     if script['type'] == 'fetch':
         await ctx.send(f"Running {script['type']}: {script['name']}")

@@ -33,7 +33,7 @@ def get_object_by_name(name, objects):
         if name == obj['name']:
             return obj
 
-    raise KeyError(f'{name} Not Found')
+    raise KeyError(f"{name} Not Found")
 
 
 def get_help_message(config):

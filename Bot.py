@@ -5,19 +5,19 @@ import interactions
 import Bot_Func
 import Server_Func
 
-print('Loading Config')
+print("Loading Config")
 config = yaml.safe_load(open('config.yml'))
 
-print('Checking for token')
+print("Checking for token")
 Bot_Func.prevent_start_without_token(config)
 
-print('Initialize Client')
+print("Initialize Client")
 bot = interactions.Client(token=config['general']['botToken'],
                           default_scope=str(config['general']['guildId']))
 
 
 @bot.command(
-    name='reso',
+    name="reso",
     description="Remote Server Operation Bot",
     options=[
         interactions.Option(
@@ -67,7 +67,7 @@ bot = interactions.Client(token=config['general']['botToken'],
     dm_permission=False
 )
 async def reso(ctx: interactions.CommandContext, sub_command: str, server_name: str = "", command_name: str = "", command_parameters: str = ""):
-    await ctx.send('Command Received')
+    await ctx.send("Command Received")
     exception_message = None
 
     try:
