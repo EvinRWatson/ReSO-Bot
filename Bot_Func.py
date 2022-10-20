@@ -9,14 +9,18 @@ def check_invalid_user(ctx, config):
     invalid_reasons = ""
 
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']):
-        invalid_reasons += "Invalid Channel\n"
+        raise PermissionError("Invalid Channel")
 
     role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
     if int(role.id) not in ctx.author.roles:
-        invalid_reasons += "Invalid Role\n"
+        raise PermissionError("Invalid Role")
 
     return invalid_reasons
 
+def prevent_command_chaining(input: str):
+    invalid_characters = ["&", ";"]
+    if any(character in input for character in invalid_characters):
+        raise PermissionError("Invalid Characters")
 
 def get_object_by_name(name, objects):
     for obj in objects:

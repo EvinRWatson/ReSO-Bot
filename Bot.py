@@ -36,25 +36,26 @@ bot = interactions.Client(token=config['general']['botToken'],
 async def reso(ctx: interactions.CommandContext, bot_parameters: str):
     await ctx.send('Command Received')
 
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
-    invalid_characters = ["&", ";"]
-    if any(character in bot_parameters for character in invalid_characters):
-        invalid_reasons += "Invalid Characters\n"
-    if invalid_reasons != "":
-        message = f"Cannot execute command:\n{invalid_reasons}"
-        Bot_Func.log_action(message, logger, ctx)
-        await ctx.send(message)
-        return
+    server_name: str= None
+    server_command: str = None
+    command_parameters: str = None
+    exception_message: str = None
 
     try:
+        Bot_Func.check_invalid_user(ctx, config)
+        Bot_Func.prevent_command_chaining(bot_parameters)
+
         server_name = bot_parameters.split(" ")[0]
         server_command = bot_parameters.split(" ")[1]
         command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
-    except IndexError:
-        message = 'There seems to be an error with your command format. Please use /reso_help for assistance'
-        Bot_Func.log_action(message, logger, ctx)
-        await ctx.send(message)
-        return
+    except IndexError as e:
+        exception_message = 'There seems to be an error with your command format. Please use /reso_help for assistance'
+    except PermissionError as e:
+        exception_message = f"Cannot execute command:\n{e}"
+
+    if exception_message is not None:
+        Bot_Func.log_action(exception_message, logger, ctx)
+        await ctx.send(exception_message)
 
     server = Bot_Func.get_object_by_name(server_name, config['servers'])
     if server is None:
