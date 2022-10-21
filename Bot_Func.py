@@ -5,30 +5,30 @@ import discord
 import interactions
 
 
-async def respond_and_log(ctx, message: str):
+async def respond_and_log(ctx: interactions.CommandContext, message: str):
     log_action(message, ctx)
     await ctx.send(message)
 
 
-def check_invalid_user(ctx, config):
-    role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
+def check_invalid_user(ctx: interactions.CommandContext, config: dict):
+    role: discord.Role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']) or int(role.id) not in ctx.author.roles:
         raise PermissionError("Invalid User")
 
 
 def prevent_command_chaining(input: str):
-    invalid_characters = ["&", ";"]
+    invalid_characters: list = ["&", ";"]
     if any(character in input for character in invalid_characters):
         raise PermissionError("Invalid Characters")
 
 
-def prevent_start_without_token(config):
+def prevent_start_without_token(config: dict):
     while str(config['general']['botToken']) == "":
         print("Bot Token Empty. Restart bot after configuration")
         time.sleep(60)
 
 
-def get_object_by_name(name, objects):
+def get_object_by_name(name: str, objects: dict):
     for obj in objects:
         if name == obj['name']:
             return obj
@@ -36,8 +36,8 @@ def get_object_by_name(name, objects):
     raise KeyError(f"{name} Not Found")
 
 
-def get_help_message(config):
-    output = ""
+def get_help_message(config: dict):
+    output: str = ""
 
     output += "Servers:\n"
     for server in config['servers']:
@@ -51,16 +51,16 @@ def get_help_message(config):
 
 
 def initialize_logger():
-    logger = logging.getLogger('discord')
+    logger: logging.Logger = logging.getLogger('discord')
     logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
+    handler: logging.Handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
     return logger
 
 
 def log_action(message: str, ctx: interactions.CommandContext = None):
-    logger = initialize_logger()
+    logger: logging.Logger = initialize_logger()
     if ctx is not None:
         logger.info(f"User: {ctx.user.username} | Channel: {ctx.channel.name} > {message}")
     else:
