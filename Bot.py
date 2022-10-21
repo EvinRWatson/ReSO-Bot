@@ -5,91 +5,123 @@ import interactions
 import Bot_Func
 import Server_Func
 
-print('Loading:')
-print('\tLogger')
-logger = Bot_Func.initialize_logger()
+print("Loading Config")
+config: dict = yaml.safe_load(open('config.yml'))
 
-print('\tConfig')
-config = yaml.safe_load(open('config.yml'))
-
-print('Checking for token')
+print("Checking for token")
 Bot_Func.prevent_start_without_token(config)
 
-print('Initialize Client')
-bot = interactions.Client(token=config['general']['botToken'],
-                          default_scope=str(config['general']['guildId']))
+print("Initialize Client")
+bot: interactions.Client = interactions.Client(token=config['general']['botToken'],
+                                               default_scope=str(config['general']['guildId']))
 
 
 @bot.command(
-    name='reso',
-    description="Command to trigger ReSO Bot interpretation",
+    name="reso",
+    description="Remote Server Operation Bot",
     options=[
         interactions.Option(
-            name="bot_parameters",
-            description="Parameters",
-            type=interactions.OptionType.STRING,
-            required=True
+            name="run",
+            description="Run Command",
+            type=interactions.OptionType.SUB_COMMAND,
+            options=[
+                interactions.Option(
+                    name="server_name",
+                    description="Server Name",
+                    type=interactions.OptionType.STRING,
+                    required=True
+                ),
+                interactions.Option(
+                    name="command_name",
+                    description="Server Command",
+                    type=interactions.OptionType.STRING,
+                    required=True
+                ),
+                interactions.Option(
+                    name="command_parameters",
+                    description="Optional Parameters",
+                    type=interactions.OptionType.STRING,
+                    required=False
+                )
+            ],
+        ),
+        interactions.Option(
+            name="help",
+            description="Displays help information",
+            type=interactions.OptionType.SUB_COMMAND,
+        ),
+        interactions.Option(
+            name="ping",
+            description="Determines whether a server is reachable or not",
+            type=interactions.OptionType.SUB_COMMAND,
+            options=[
+                interactions.Option(
+                    name="server_name",
+                    description="Name of server to ping",
+                    type=interactions.OptionType.STRING,
+                    required=True
+                )
+            ],
         )
     ],
     dm_permission=False
 )
-async def reso(ctx: interactions.CommandContext, bot_parameters: str):
-    await ctx.send('Command Received')
+async def reso(ctx: interactions.CommandContext, sub_command: str, server_name: str = "", command_name: str = "",
+               command_parameters: str = ""):
+    await ctx.send("Command Received")
 
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
-    invalid_characters = ["&", ";"]
-    if any(character in bot_parameters for character in invalid_characters):
-        invalid_reasons += "Invalid Characters\n"
-    if invalid_reasons != "":
-        await ctx.send('Cannot execute command:\n' + invalid_reasons)
-        return
+    exception_message: str = None
 
     try:
-        server_name = bot_parameters.split(" ")[0]
-        server_command = bot_parameters.split(" ")[1]
-        command_parameters = bot_parameters.replace(server_name, '').replace(server_command, '').strip()
-    except IndexError:
-        await ctx.send(
-            'There seems to be an error with your command format. If you need help please refer to the documentation')
+        if sub_command == 'run':
+            await reso_run(ctx, server_name, command_name, command_parameters)
+        if sub_command == 'help':
+            await reso_help(ctx)
+        if sub_command == 'ping':
+            await reso_ping(ctx, server_name)
+    except PermissionError as pe:
+        exception_message = str(pe)
+    except KeyError as ke:
+        exception_message = str(ke)
+    except Exception as e:
+        exception_message = "Unexpected Error"
+
+    if exception_message is not None:
+        await Bot_Func.respond_and_log(ctx, exception_message)
         return
 
-    server = Bot_Func.get_object_by_name(server_name, config['servers'])
-    if server is None:
-        await ctx.send(f"Server '{server_name}' Not Found")
-        return
 
-    script = Bot_Func.get_object_by_name(server_command, config['scripts'])
-    if script is None:
-        await ctx.send(f"Script '{server_command}' Not Found")
-        return
+async def reso_run(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
+    Bot_Func.check_invalid_user(ctx, config)
+    Bot_Func.prevent_command_chaining(command_parameters)
+    server: dict = Bot_Func.get_object_by_name(server_name, config['servers'])
+    script: dict = Bot_Func.get_object_by_name(command_name, config['scripts'])
 
+    log_message: str = f"Running {script['name']} on {server_name} with the parameters: {command_parameters}"
+    await Bot_Func.respond_and_log(ctx, log_message)
     await Server_Func.run(ctx, config, server, script, command_parameters)
 
 
-@bot.command(
-    name='reso_help',
-    description="Display help information",
-    dm_permission=False
-)
 async def reso_help(ctx: interactions.CommandContext):
-    invalid_reasons = Bot_Func.check_invalid_user(ctx, config)
-    if invalid_reasons != "":
-        await ctx.send('Cannot execute command:\n' + invalid_reasons)
-        return
+    Bot_Func.check_invalid_user(ctx, config)
 
-    output = "-Help Info-\n" \
-             "Command Format:\t/reso <server-name> <command-name> <parameters>\n\n"
+    log_message: str = 'Used reso_help'
+    Bot_Func.log_action(log_message, ctx)
 
-    output += "Servers:\n"
-    for server in config['servers']:
-        output += f"\t{server['name']}\n"
-
-    output += "\nScripts:\n"
-    for script in config['scripts']:
-        output += f"\t{script['name']}\n"
-
-    await ctx.send(output)
+    await ctx.send(Bot_Func.get_help_message(config))
 
 
-print('Start Client')
+async def reso_ping(ctx: interactions.CommandContext, server_name: str):
+    Bot_Func.check_invalid_user(ctx, config)
+
+    message: str = f'Pinging server: {server_name}'
+    await Bot_Func.respond_and_log(ctx, message)
+
+    if Server_Func.is_server_up(server_name, config):
+        await ctx.send(f'{server_name} server is up!')
+    else:
+        await ctx.send(f'{server_name} server is down!')
+
+
+Bot_Func.log_action('Start RESO Client')
 bot.start()

@@ -12,6 +12,8 @@ Architectures include:
 - arm: Raspberry Pi (32bit)
 - amd64: x86/x64 Compatible CPU's (AMD/Intel)
 
+*Dev builds on Docker Hub only come in the linux/amd64 variety to enable faster build times for testing*
+
 *Alternatively, you can also create your own Docker image by building the Dockerfile yourself. If you wish to do so, then follow [this](https://docs.docker.com/engine/reference/commandline/build/) guide* 
 
 ## Run the image

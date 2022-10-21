@@ -32,16 +32,12 @@ Recommended setup for this application is containerized on a centralized server,
 
 ## Using the bot
 
-After completing installation, using the bot requires using the '/reso' command, passing in these parameters in the following order:
+After completing installation, using the bot requires using the '/reso' command
 
-- server-name
-- command-name
-- parameters (if applicable to the command)
+Commands:
 
-Command Format:
-
-    /reso <server-name> <command-name> <parameters>
-
-Note: Everything after '/reso' must be enclosed in the 'bot_parameters' field as shown in the input box
+- /reso run <server_name> <command_name> <parameters?>
+- /reso ping <server_name>
+- /reso help
 
 #### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)
