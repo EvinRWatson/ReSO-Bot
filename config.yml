@@ -1,6 +1,6 @@
 ---
 general:
-  botToken:
+  botToken: ''
   guildId:
   listeningChannelId:
   allowedRole:
