@@ -10,7 +10,7 @@ async def respond_and_log(ctx: interactions.CommandContext, message: str):
     await ctx.send(message)
 
 
-def check_invalid_user(ctx: interactions.CommandContext, config: dict):
+def prevent_invalid_user(ctx: interactions.CommandContext, config: dict):
     role: discord.Role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']) or int(role.id) not in ctx.author.roles:
         raise PermissionError("Invalid User")

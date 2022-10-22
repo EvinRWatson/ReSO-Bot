@@ -92,7 +92,7 @@ async def reso(ctx: interactions.CommandContext, sub_command: str, server_name: 
 
 
 async def reso_run(ctx: interactions.CommandContext, server_name: str, command_name: str, command_parameters: str = ""):
-    Bot_Func.check_invalid_user(ctx, config)
+    Bot_Func.prevent_invalid_user(ctx, config)
     Bot_Func.prevent_command_chaining(command_parameters)
     server: dict = Bot_Func.get_object_by_name(server_name, config['servers'])
     script: dict = Bot_Func.get_object_by_name(command_name, config['scripts'])
@@ -103,7 +103,7 @@ async def reso_run(ctx: interactions.CommandContext, server_name: str, command_n
 
 
 async def reso_help(ctx: interactions.CommandContext):
-    Bot_Func.check_invalid_user(ctx, config)
+    Bot_Func.prevent_invalid_user(ctx, config)
 
     log_message: str = 'Used reso_help'
     Bot_Func.log_action(log_message, ctx)
@@ -112,7 +112,7 @@ async def reso_help(ctx: interactions.CommandContext):
 
 
 async def reso_ping(ctx: interactions.CommandContext, server_name: str):
-    Bot_Func.check_invalid_user(ctx, config)
+    Bot_Func.prevent_invalid_user(ctx, config)
 
     message: str = f'Pinging server: {server_name}'
     await Bot_Func.respond_and_log(ctx, message)
