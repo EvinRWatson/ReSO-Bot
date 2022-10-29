@@ -3,6 +3,7 @@ import time
 
 import discord
 import interactions
+import yaml
 
 
 async def respond_and_log(ctx: interactions.CommandContext, message: str):
@@ -65,3 +66,6 @@ def log_action(message: str, ctx: interactions.CommandContext = None):
         logger.info(f"User: {ctx.user.username} | Channel: {ctx.channel.name} > {message}")
     else:
         logger.info(message)
+
+def get_config():
+    return yaml.safe_load(open('config.yml'))

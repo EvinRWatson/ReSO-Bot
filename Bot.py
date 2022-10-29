@@ -1,12 +1,10 @@
-import yaml
-
 import interactions
 
 import Bot_Func
 import Server_Func
 
 print("Loading Config")
-config: dict = yaml.safe_load(open('config.yml'))
+config: dict = Bot_Func.get_config()
 
 print("Checking for token")
 Bot_Func.prevent_start_without_token(config)
