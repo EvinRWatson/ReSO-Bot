@@ -67,5 +67,6 @@ def log_action(message: str, ctx: interactions.CommandContext = None):
     else:
         logger.info(message)
 
+
 def get_config():
     return yaml.safe_load(open('config.yml'))
