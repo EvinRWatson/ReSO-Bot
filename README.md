@@ -38,6 +38,7 @@ Commands:
 
 - /reso run <server_name> <command_name> <parameters?>
 - /reso ping <server_name>
+- /reso reload
 - /reso help
 
 #### Have a problem, or want to request a feature? [Open an issue!](https://github.com/EvinRWatson/ReSO-Bot/issues/new)

@@ -3,6 +3,7 @@ import time
 
 import discord
 import interactions
+import yaml
 
 
 async def respond_and_log(ctx: interactions.CommandContext, message: str):
@@ -10,16 +11,10 @@ async def respond_and_log(ctx: interactions.CommandContext, message: str):
     await ctx.send(message)
 
 
-def check_invalid_user(ctx: interactions.CommandContext, config: dict):
+def prevent_invalid_user(ctx: interactions.CommandContext, config: dict):
     role: discord.Role = discord.utils.get(ctx.guild.roles, name=config['general']['allowedRole'])
     if not str(ctx.channel.id) == str(config['general']['listeningChannelId']) or int(role.id) not in ctx.author.roles:
         raise PermissionError("Invalid User")
-
-
-def prevent_command_chaining(input: str):
-    invalid_characters: list = ["&", ";"]
-    if any(character in input for character in invalid_characters):
-        raise PermissionError("Invalid Characters")
 
 
 def prevent_start_without_token(config: dict):
@@ -65,3 +60,14 @@ def log_action(message: str, ctx: interactions.CommandContext = None):
         logger.info(f"User: {ctx.user.username} | Channel: {ctx.channel.name} > {message}")
     else:
         logger.info(message)
+
+
+def get_config():
+    return yaml.safe_load(open('config.yml'))
+
+
+def inject_params(command: str, params: str):
+    if not command.__contains__("!param!"):
+        raise PermissionError("Parameters not allowed for this action")
+
+    return command.replace('!param!', params)
