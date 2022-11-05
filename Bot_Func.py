@@ -67,7 +67,7 @@ def get_config():
 
 
 def inject_params(command: str, params: str):
-    if not command.__contains__("!param!"):
+    if '!param!' not in command:
         raise PermissionError("Parameters not allowed for this action")
 
     return command.replace('!param!', params)
