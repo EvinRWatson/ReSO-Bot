@@ -9,12 +9,10 @@ import Bot_Func
 
 async def run(ctx: interactions.CommandContext, config: dict, server: dict, script: dict):
     if script['type'] == 'command':
-        await ctx.send(f"Running {script['type']}: {script['name']}")
         run_command(server, script)
         await ctx.send("Complete")
         return
     if script['type'] == 'fetch':
-        await ctx.send(f"Running {script['type']}: {script['name']}")
         end_file: interactions.File = run_fetch(server, script, config)
         await command_send(ctx, script['name'], files=end_file)
         return
