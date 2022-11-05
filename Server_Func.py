@@ -21,7 +21,7 @@ async def run(ctx: interactions.CommandContext, config: dict, server: dict, scri
 
 
 def run_command(server: dict, command: dict, parameters: str):
-    server_command: str = f'{command["command"]} "{parameters.strip()}"'
+    server_command: str = Bot_Func.inject_params(command["command"], parameters.strip())
     subprocess.run(["ssh", f"{server['username']}@{server['host']}", server_command],
                    shell=False,
                    stdout=subprocess.PIPE,

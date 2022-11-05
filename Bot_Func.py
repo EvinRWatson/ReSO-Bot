@@ -70,3 +70,7 @@ def log_action(message: str, ctx: interactions.CommandContext = None):
 
 def get_config():
     return yaml.safe_load(open('config.yml'))
+
+
+def inject_params(command: str, params: str):
+    return command.replace('!param!', params)
