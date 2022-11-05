@@ -17,12 +17,6 @@ def prevent_invalid_user(ctx: interactions.CommandContext, config: dict):
         raise PermissionError("Invalid User")
 
 
-def prevent_command_chaining(input: str):
-    invalid_characters: list = ["&", ";"]
-    if any(character in input for character in invalid_characters):
-        raise PermissionError("Invalid Characters")
-
-
 def prevent_start_without_token(config: dict):
     while str(config['general']['botToken']) == "":
         print("Bot Token Empty. Restart bot after configuration")
@@ -70,3 +64,10 @@ def log_action(message: str, ctx: interactions.CommandContext = None):
 
 def get_config():
     return yaml.safe_load(open('config.yml'))
+
+
+def inject_params(command: str, params: str):
+    if not command.__contains__("!param!"):
+        raise PermissionError("Parameters not allowed for this action")
+
+    return command.replace('!param!', params)

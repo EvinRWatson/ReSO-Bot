@@ -73,6 +73,19 @@ Example:
 
     sh /home/bob/backup.sh
 
+#### Parameters (Optional)
+In order to pass parameters to your command, you need to set a parameter flag
+in the command string. The designated parameter flag is **!param!**.
+An example example of calling a script that takes in a parameter may look 
+this.
+
+    sh /home/bob/ban_user.sh !param!
+
+Doing this will allow you to pass in whatever you want through the Discord
+client as a replacement for **!param!**. If you pass parameters to a command that 
+does not have an explicit parameter flag you will get an error, and the command
+will not run.
+
 ### location (when 'type' is 'fetch')
 Location of the file you want to fetch, associated with this command.
 
