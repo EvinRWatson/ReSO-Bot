@@ -7,10 +7,10 @@ from interactions.ext.files import command_send
 import Bot_Func
 
 
-async def run(ctx: interactions.CommandContext, config: dict, server: dict, script: dict, command_parameters: str):
+async def run(ctx: interactions.CommandContext, config: dict, server: dict, script: dict):
     if script['type'] == 'command':
         await ctx.send(f"Running {script['type']}: {script['name']}")
-        run_command(server, script, command_parameters)
+        run_command(server, script)
         await ctx.send("Complete")
         return
     if script['type'] == 'fetch':
@@ -20,9 +20,8 @@ async def run(ctx: interactions.CommandContext, config: dict, server: dict, scri
         return
 
 
-def run_command(server: dict, command: dict, parameters: str):
-    server_command: str = Bot_Func.inject_params(command["command"], parameters.strip())
-    subprocess.run(["ssh", f"{server['username']}@{server['host']}", server_command],
+def run_command(server: dict, script: dict):
+    subprocess.run(["ssh", f"{server['username']}@{server['host']}", script['command']],
                    shell=False,
                    stdout=subprocess.PIPE,
                    stderr=subprocess.PIPE,
