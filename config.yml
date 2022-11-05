@@ -12,5 +12,5 @@ servers:
 scripts:
 - name:
   type:
-  command: !param!
+  command:
 ...
