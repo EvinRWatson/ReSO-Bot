@@ -100,11 +100,11 @@ async def reso_run(ctx: interactions.CommandContext, server_name: str, command_n
     Bot_Func.prevent_invalid_user(ctx, config)
     server: dict = Bot_Func.get_object_by_name(server_name, config['servers'])
     script: dict = Bot_Func.get_object_by_name(command_name, config['scripts'])
-    script['command'] = Bot_Func.inject_params(script['command'], command_parameters)
+    run_script: str = Bot_Func.inject_params(script['command'], command_parameters)
 
     log_message: str = f"Running {script['name']} on {server_name} with the parameters: {command_parameters}"
     await Bot_Func.respond_and_log(ctx, log_message)
-    await Server_Func.run(ctx, config, server, script)
+    await Server_Func.run(ctx, config, server, script, run_script)
 
 
 async def reso_help(ctx: interactions.CommandContext):
