@@ -7,9 +7,9 @@ from interactions.ext.files import command_send
 import Bot_Func
 
 
-async def run(ctx: interactions.CommandContext, config: dict, server: dict, script: dict):
+async def run(ctx: interactions.CommandContext, config: dict, server: dict, script: dict, run_script: str):
     if script['type'] == 'command':
-        run_command(server, script)
+        run_command(server, script, run_script)
         await ctx.send("Complete")
         return
     if script['type'] == 'fetch':
@@ -18,8 +18,8 @@ async def run(ctx: interactions.CommandContext, config: dict, server: dict, scri
         return
 
 
-def run_command(server: dict, script: dict):
-    subprocess.run(["ssh", f"{server['username']}@{server['host']}", script['command']],
+def run_command(server: dict, script: dict, run_script: str):
+    subprocess.run(["ssh", f"{server['username']}@{server['host']}", run_script],
                    shell=False,
                    stdout=subprocess.PIPE,
                    stderr=subprocess.PIPE,
