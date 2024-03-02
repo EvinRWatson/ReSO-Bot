@@ -4,6 +4,6 @@ ADD . /
 
 RUN apt-get update -y
 RUN python3 -m pip install -U pyyaml discord.py discord-py-interactions interactions-files
-RUN apt-get install openssh-client vim nano iputils-ping
+RUN apt-get install openssh-client vim nano iputils-ping -y
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 CMD [ "python", "./Bot.py" ]
