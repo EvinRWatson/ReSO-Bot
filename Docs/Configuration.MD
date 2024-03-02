@@ -35,6 +35,10 @@ The temporary location of the fetched file in the bot client's operating system.
 is arbitrary, but make sure that the bot has permissions to access that directory. When using Docker,
 the recommended location is '/tmp'.
 
+### azureCredentialsJson (Optional)
+The credentials used by Azure CLI. Not required if you are not using Azure CLI. Documentation on 
+generating the credentials JSON can be found [here](https://github.com/Azure/login?tab=readme-ov-file#login-with-a-service-principal-secret).
+
 # Servers
 
 ### name:

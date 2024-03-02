@@ -1,10 +1,13 @@
 import interactions
+import os
 
 import Bot_Func
 import Server_Func
 
 print("Loading Config")
 config: dict = Bot_Func.get_config()
+if config['general']['azureCredentialsJson'] is not None:
+    os.environ["AZURE_STORAGE_CONNECTION_STRING"] = config['general']['azureCredentialsJson'];
 
 print("Checking for token")
 Bot_Func.prevent_start_without_token(config)
