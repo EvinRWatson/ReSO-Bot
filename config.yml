@@ -5,6 +5,7 @@ general:
   listeningChannelId:
   allowedRole:
   fileDropClientFilePath:
+  azureCredentialsJson:
 servers:
 - name:
   username:
